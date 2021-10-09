@@ -38,7 +38,7 @@ jobs:
         uses: srfrnk/current-time@master
         id: current-time
         with:
-          format: YYYY-MM-DD-HH:mm:ss
+          format: YYYY-MM-DD-HH-mm-ss
 
       # Install required packages
       - name: Install required packages
@@ -51,11 +51,11 @@ jobs:
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
-          sudo tar -cpvjf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.bz2 -C debian-rootfs-${{ steps.current-time.outputs.formattedTime }} . --exclude=debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.bz2
+          sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz -C debian-rootfs-${{ steps.current-time.outputs.formattedTime }} . --exclude=debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz
           
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
         with:
           name: debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
-          path: debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.bz2
+          path: debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz
           
