@@ -51,8 +51,10 @@ jobs:
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
-          LANG=C.UTF-8 chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /bin/bash /debootstrap/debootstrap --second-stage exit
-          sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
+          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /bin/bash /debootstrap/debootstrap --second-stage exit
+          
+      - name: Archive the rootfs
+        run: sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
