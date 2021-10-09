@@ -40,17 +40,10 @@ jobs:
         with:
           format: YYYY-MM-DD-HH-mm-ss
         
-      - name: Set arch for qemu
-        env:
-          arch: ${{ github.event.inputs.arch }}
       - if: ${{ github.event.inputs.arch == 'amd64' }}
         name: Set arch for qemu
         env:
           arch: x86_64
-      - if: ${{ github.event.inputs.arch == 'arm64' }}
-        name: Set arch for qemu
-        env:
-          arch: aarch64
 
       # Install required packages
       - name: Install required packages
@@ -59,10 +52,13 @@ jobs:
           sudo apt-get install -y debootstrap qemu qemu-user qemu-user-static binfmt-support binutils
 
       # Runs a set of commands using the runners shell
-      - name: Download and Install core packages
+      - name: First part - Download and Install core packages
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
+          
+      - name: Second part of the setup
+        run: |
           cp /usr/bin/qemu-$arch-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
           LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-${{ github.event.inputs.arch }}-static /bin/bash /usr/bin/chfn -f "systemd Time Synchronization" /debootstrap/debootstrap --second-stage exit
           
