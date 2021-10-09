@@ -44,13 +44,14 @@ jobs:
       - name: Install required packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y debootstrap qemu qemu-user-static
+          sudo apt-get install -y debootstrap qemu qemu-user-static 
 
       # Runs a set of commands using the runners shell
       - name: Download and Install core packages
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
+          LANG=C.UTF-8 chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /bin/bash /debootstrap/debootstrap --second-stage exit
           sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           
       - name: Upload debian-rootfs
