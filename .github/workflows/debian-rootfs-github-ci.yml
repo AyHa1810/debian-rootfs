@@ -22,7 +22,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: debian-latest
+    runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -51,7 +51,7 @@ jobs:
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
-          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /bin/bash /debootstrap/debootstrap --second-stage exit
+          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /bin/bash LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${buildchroot}/lib/systemd /debootstrap/debootstrap --second-stage exit
           
       - name: Archive the rootfs
         run: sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
