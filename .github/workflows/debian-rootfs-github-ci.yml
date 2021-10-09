@@ -51,7 +51,7 @@ jobs:
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
-          sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz -C debian-rootfs-${{ steps.current-time.outputs.formattedTime }} . --exclude=debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz
+          sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz -C debian-rootfs-${{ steps.current-time.outputs.formattedTime }} .
           
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
