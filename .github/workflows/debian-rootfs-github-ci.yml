@@ -63,7 +63,7 @@ jobs:
       - name: Initial Setup
         run: |
           sudo apt-get update
-          sudo apt-get install -y qemu qemu-user qemu-user-static binfmt-support binutils wget debian-archive-keyring proot
+          sudo apt-get install -y qemu qemu-user qemu-user-static binfmt-support binutils wget debian-archive-keyring
           sudo modprobe binfmt_misc
           sudo apt-key add /usr/share/keyrings/debian-archive-keyring.gpg
           TEMP_DEB="$(mktemp)" &&
@@ -80,7 +80,9 @@ jobs:
       - name: Second part of the setup
         run: |
           sudo cp /usr/bin/qemu-$ARCH-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
-          LANG=C.UTF-8 HOME=/root sudo proot -r debian-rootfs-${{ steps.current-time.outputs.formattedTime }} $QEMU_LOAD /bin/bash /debootstrap/debootstrap --second-stage
+          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} $QEMU_LOAD /bin/bash 
+          export TERM=xterm-color
+          /debootstrap/debootstrap --second-stage
           
           cd ~
           ln -sf bash /bin/sh
