@@ -29,8 +29,15 @@ jobs:
           sudo apt-get install multistrap binfmt-support qemu-user-static debian-archive-keyring debian-keyring software-properties-common
           sudo modprobe binfmt_misc
           sudo tee /usr/share/keyrings/debian-archive-keyring.gpg 
-          sudo echo 'deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] http://deb.debian.org/debian stable main InRelease' > /etc/apt/sources.list
+          #sudo echo 'deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] http://deb.debian.org/debian stable main InRelease' > /etc/apt/sources.list
           sudo apt-get update
+          
+      - name: add custom deb repository
+        uses: myci-actions/add-deb-repo@10
+        with:
+          repo: deb http://deb.debian.org/debian stable main InRelease
+          repo-name: debian
+          keys-asc: file:///usr/share/keyrings/debian-archive-keyring.gpg
 
       - name: Run setup.sh
         run: |
