@@ -26,7 +26,9 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install multistrap binfmt-support qemu-user-static
+          sudo apt-get install multistrap binfmt-support qemu-user-static debian-archive-keyring
+          sudo modprobe binfmt_misc
+          sudo apt-key add /usr/share/keyrings/debian-archive-keyring.gpg
           
       - name: Run setup.sh
         run: |
