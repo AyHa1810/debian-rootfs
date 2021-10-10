@@ -40,17 +40,17 @@ jobs:
         with:
           format: YYYY-MM-DD-HH-mm-ss
         
-      - if: ${{ github.event.inputs.arch == 'amd64' }}
-        name: Set arch for qemu
+      - name: Set arch for qemu
         run: |
-          if ${{ github.event.inputs.arch }} = amd64
+          ARCH=${{ github.event.inputs.arch }}
+          if [ "$ARCH" == "amd64" ]
           then
-             arch=x86_64
-          elif ${{ github.event.inputs.arch }} = arm64
+             ARCH=x86_64
+          elif [ "$ARCH" == "arm64" ]
           then
-             arch=aarch64
+             ARCH=aarch64
           else
-             arch=${{ github.event.inputs.arch }}
+             ARCH=${{ github.event.inputs.arch }}
           fi
 
       # Install required packages
@@ -67,8 +67,8 @@ jobs:
           
       - name: Second part of the setup
         run: |
-          cp /usr/bin/qemu-'$arch'-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
-          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-${{ github.event.inputs.arch }}-static /bin/bash /usr/bin/chfn -f "systemd Time Synchronization" /debootstrap/debootstrap --second-stage exit
+          cp /usr/bin/qemu-$ARCH-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
+          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-$ARCH-static /bin/bash /usr/bin/chfn -f "systemd Time Synchronization" /debootstrap/debootstrap --second-stage exit
           
       - name: Archive the rootfs
         run: sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
