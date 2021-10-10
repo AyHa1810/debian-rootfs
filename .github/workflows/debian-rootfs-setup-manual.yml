@@ -23,6 +23,11 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install multistrap binfmt-support qemu-user-static
+          
       - name: Run setup.sh
         run: |
           chmod +777 setup.sh
