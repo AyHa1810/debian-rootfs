@@ -76,16 +76,12 @@ jobs:
           
           cd ~
           apt-get update
-          apt install -y iputils-ping iproute2 lsb-release vim whois
+          apt-get install -y iputils-ping iproute2 lsb-release vim whois
           ln -sf bash /bin/sh
           ln -sf bash.1.gz /usr/share/man/man1/sh.1.gz
-          apt install -y sudo systemd systemd-sysv kmod network-manager parted
+          apt-get install -y sudo systemd systemd-sysv kmod network-manager parted
           /debootstrap/debootstrap --second-stage 
           
-          groupadd -g 1000 adv
-          useradd -u 1000 -d /home/adv -m -g adv -G adm,sudo,audio adv
-          CRYPT=$(echo adv | mkpasswd -m sha-512 -s)
-          sed -i "s|^adv:[^:]\+:|adv:$CRYPT:|" /etc/shadow
           sed -i "s/^root:[^:]\+:/root::/" /etc/shadow
           echo "unknown" > /etc/hostname
           echo -e "127.0.0.1    localhost \n127.0.1.1    unknown\n" > /etc/hosts
@@ -93,7 +89,7 @@ jobs:
           ln -sf ../run/resolvconf/resolv.conf /etc/resolv.conf
           apt-get clean
           history -c
-          exit
+          logout
           
       - name: Archive the rootfs
         run: sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
