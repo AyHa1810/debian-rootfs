@@ -23,9 +23,9 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
+      - name: Run setup.sh
         run: |
-          sudo setup.sh ${{ github.event.inputs.arch }}
+          sudo ./setup.sh ${{ github.event.inputs.arch }}
           echo "OUTPUT=$build_dir/$tar_name" >> $GITHUB_ENV
         
       - name: Upload debian-rootfs
