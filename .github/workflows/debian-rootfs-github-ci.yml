@@ -55,22 +55,45 @@ jobs:
           fi
           echo "ARCH=$ARCH" >> $GITHUB_ENV
 
-      # Install required packages
-      - name: Install required packages
+      # Initial Setup
+      - name: Initial Setup
         run: |
           sudo apt-get update
-          sudo apt-get install -y debootstrap qemu qemu-user qemu-user-static binfmt-support binutils
+          sudo apt-get install -y debootstrap qemu qemu-user qemu-user-static binfmt-support binutils wget debian-archive-keyring
+          sudo modprobe binfmt_misc
+          sudo apt-key add /usr/share/keyrings/debian-archive-keyring.gpg
 
       # Runs a set of commands using the runners shell
       - name: First part - Download and Install core packages
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
-          sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
+          sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} --keyring /usr/share/keyrings/debian-archive-keyring.gpg ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           
       - name: Second part of the setup
         run: |
           sudo cp /usr/bin/qemu-$ARCH-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
-          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-$ARCH-static /bin/bash /debootstrap/debootstrap --second-stage exit
+          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-$ARCH-static /bin/bash 
+          
+          cd ~
+          apt-get update
+          apt install -y iputils-ping iproute2 lsb-release vim whois
+          ln -sf bash /bin/sh
+          ln -sf bash.1.gz /usr/share/man/man1/sh.1.gz
+          apt install -y sudo systemd systemd-sysv kmod network-manager parted
+          /debootstrap/debootstrap --second-stage 
+          
+          groupadd -g 1000 adv
+          useradd -u 1000 -d /home/adv -m -g adv -G adm,sudo,audio adv
+          CRYPT=$(echo adv | mkpasswd -m sha-512 -s)
+          sed -i "s|^adv:[^:]\+:|adv:$CRYPT:|" /etc/shadow
+          sed -i "s/^root:[^:]\+:/root::/" /etc/shadow
+          echo "unknown" > /etc/hostname
+          echo -e "127.0.0.1    localhost \n127.0.1.1    unknown\n" > /etc/hosts
+ 
+          ln -sf ../run/resolvconf/resolv.conf /etc/resolv.conf
+          apt-get clean
+          history -c
+          exit
           
       - name: Archive the rootfs
         run: sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
