@@ -52,6 +52,7 @@ jobs:
           else
              ARCH=${{ github.event.inputs.arch }}
           fi
+          printenv ARCH
 
       # Install required packages
       - name: Install required packages
@@ -67,8 +68,8 @@ jobs:
           
       - name: Second part of the setup
         run: |
-          cp /usr/bin/qemu-$ARCH-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
-          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-$ARCH-static /bin/bash /usr/bin/chfn -f "systemd Time Synchronization" /debootstrap/debootstrap --second-stage exit
+          cp /usr/bin/qemu-'$ARCH'-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
+          LANG=C.UTF-8 sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-'$ARCH'-static /bin/bash /usr/bin/chfn -f "systemd Time Synchronization" /debootstrap/debootstrap --second-stage exit
           
       - name: Archive the rootfs
         run: sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
