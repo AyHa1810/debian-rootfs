@@ -63,9 +63,13 @@ jobs:
       - name: Initial Setup
         run: |
           sudo apt-get update
-          sudo apt-get install -y debootstrap qemu qemu-user qemu-user-static binfmt-support binutils wget debian-archive-keyring
+          sudo apt-get install -y qemu qemu-user qemu-user-static binfmt-support binutils wget debian-archive-keyring
           sudo modprobe binfmt_misc
           sudo apt-key add /usr/share/keyrings/debian-archive-keyring.gpg
+          TEMP_DEB="$(mktemp)" &&
+          wget -O "$TEMP_DEB" 'http://ftp.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.124_all.deb' &&
+          sudo dpkg -i "$TEMP_DEB"
+          rm -f "$TEMP_DEB"
 
       # Runs a set of commands using the runners shell
       - name: First part - Download and Install core packages
