@@ -33,6 +33,11 @@ jobs:
           sudo apt-get update
         # [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg]
 
+      - name: Apply patch to fix
+        run: |
+          chmod +777 fix.sh
+          bash fix.sh
+
       - name: Run setup.sh
         run: |
           chmod +777 setup.sh
