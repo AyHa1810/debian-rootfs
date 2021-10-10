@@ -25,7 +25,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run setup.sh
         run: |
-          sudo ./setup.sh ${{ github.event.inputs.arch }}
+          chmod +777 setup.sh
+          sudo bash setup.sh ${{ github.event.inputs.arch }}
           echo "OUTPUT=$build_dir/$tar_name" >> $GITHUB_ENV
         
       - name: Upload debian-rootfs
