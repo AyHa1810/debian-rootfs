@@ -47,13 +47,17 @@ jobs:
           if [ "$ARCH" == "amd64" ]
           then
              ARCH=x86_64
+             QEMU_LOAD=""
           elif [ "$ARCH" == "arm64" ]
           then
              ARCH=aarch64
+             QEMU_LOAD="/usr/bin/qemu-$ARCH-static"
           else
              ARCH=${{ github.event.inputs.arch }}
+             QEMU_LOAD="/usr/bin/qemu-$ARCH-static"
           fi
           echo "ARCH=$ARCH" >> $GITHUB_ENV
+          echo "QEMU_LOAD=$QEMU_LOAD" >> $GITHUB_ENV
 
       # Initial Setup
       - name: Initial Setup
@@ -72,12 +76,12 @@ jobs:
       - name: Second part of the setup
         run: |
           sudo cp /usr/bin/qemu-$ARCH-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
-          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-$ARCH-static /bin/bash 
+          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} $QEMU_LOAD /bin/bash 
           
           cd ~
+          /debootstrap/debootstrap --second-stage
           ln -sf bash /bin/sh
           ln -sf bash.1.gz /usr/share/man/man1/sh.1.gz
-          /debootstrap/debootstrap --second-stage 
           
           sed -i "s/^root:[^:]\+:/root::/" /etc/shadow
           echo "unknown" > /etc/hostname
