@@ -80,9 +80,7 @@ jobs:
       - name: Second part of the setup
         run: |
           sudo cp /usr/bin/qemu-$ARCH-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
-          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} $QEMU_LOAD /bin/bash 
-          export TERM=xterm-color
-          /debootstrap/debootstrap --second-stage
+          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} $QEMU_LOAD /bin/bash export TERM=xterm-color /debootstrap/debootstrap --second-stage
           
           cd ~
           ln -sf bash /bin/sh
