@@ -75,11 +75,8 @@ jobs:
           LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} /usr/bin/qemu-$ARCH-static /bin/bash 
           
           cd ~
-          apt-get update
-          apt-get install -y iputils-ping iproute2 lsb-release vim whois
           ln -sf bash /bin/sh
           ln -sf bash.1.gz /usr/share/man/man1/sh.1.gz
-          apt-get install -y sudo systemd systemd-sysv kmod network-manager parted
           /debootstrap/debootstrap --second-stage 
           
           sed -i "s/^root:[^:]\+:/root::/" /etc/shadow
