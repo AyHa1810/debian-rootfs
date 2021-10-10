@@ -75,7 +75,7 @@ jobs:
       - name: First part - Download and Install core packages
         run: |
           mkdir debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
-          sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} --include systemd-timesyncd systemd --keyring /usr/share/keyrings/debian-archive-keyring.gpg ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
+          sudo debootstrap --foreign --arch ${{ github.event.inputs.arch }} --include systemd,systemd-timesyncd --keyring /usr/share/keyrings/debian-archive-keyring.gpg ${{ github.event.inputs.codename }} ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           
       - name: Second part of the setup
         run: |
