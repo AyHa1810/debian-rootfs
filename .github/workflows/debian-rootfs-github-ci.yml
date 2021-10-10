@@ -42,15 +42,15 @@ jobs:
         
       - name: Set arch for qemu
         run: |
-          ARCH=${{ github.event.inputs.arch }}
+          export ARCH=${{ github.event.inputs.arch }}
           if [ "$ARCH" == "amd64" ]
           then
-             ARCH=x86_64
+             export ARCH=x86_64
           elif [ "$ARCH" == "arm64" ]
           then
-             ARCH=aarch64
+             export ARCH=aarch64
           else
-             ARCH=${{ github.event.inputs.arch }}
+             export ARCH=${{ github.event.inputs.arch }}
           fi
           echo "ARCH set to $ARCH"
 
