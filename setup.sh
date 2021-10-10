@@ -146,7 +146,7 @@ if [[ $arch == $host_arch ]]; then
     mount --bind /dev $build_dir/$rootfs_dir_utc/dev
 
     # Create root file system and configure debian packages
-    multistrap -d $build_dir/$rootfs_dir_utc -a $arch -f $conf_file --no-auth
+    multistrap -d $build_dir/$rootfs_dir_utc -a $arch -f $conf_file
     if [[ $? != 0 ]]; then
         echo "mutltistrap with configuration file $conf_file failed"
         umount $build_dir/$rootfs_dir_utc/dev
@@ -155,7 +155,7 @@ if [[ $arch == $host_arch ]]; then
     fi
 else
     # Create root file system
-    multistrap -d $build_dir/$rootfs_dir_utc -a $arch -f $conf_file --no-auth
+    multistrap -d $build_dir/$rootfs_dir_utc -a $arch -f $conf_file
     if [[ $? != 0 ]]; then
         echo "mutltistrap with configuration file $conf_file failed"
         rm -rf $build_dir/$rootfs_dir_utc
