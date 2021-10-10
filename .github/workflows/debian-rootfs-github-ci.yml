@@ -41,18 +41,19 @@ jobs:
           format: YYYY-MM-DD-HH-mm-ss
         
       - name: Set arch for qemu
+        id: arch
         run: |
-          export ARCH=${{ github.event.inputs.arch }}
+          ARCH=${{ github.event.inputs.arch }}
           if [ "$ARCH" == "amd64" ]
           then
-             export ARCH=x86_64
+             ARCH=x86_64
           elif [ "$ARCH" == "arm64" ]
           then
-             export ARCH=aarch64
+             ARCH=aarch64
           else
-             export ARCH=${{ github.event.inputs.arch }}
+             ARCH=${{ github.event.inputs.arch }}
           fi
-          echo "ARCH set to $ARCH"
+          echo "ARCH=$ARCH" >> $GITHUB_ENV
 
       # Install required packages
       - name: Install required packages
