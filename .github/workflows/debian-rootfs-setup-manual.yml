@@ -28,6 +28,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install multistrap binfmt-support qemu-user-static debian-archive-keyring debian-keyring
           sudo modprobe binfmt_misc
+          sudo apt-key add -y /usr/share/keyrings/debian-archive-keyring.gpg
+          sudo apt-key add -y /usr/share/keyrings/debian-keyring.gpg
           sudo apt-key update
           
       - name: Run setup.sh
