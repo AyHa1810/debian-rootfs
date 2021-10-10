@@ -1,0 +1,12 @@
+--- multistrap	2018-11-21 11:00:46.000000000 -0300
++++ multistrap_mod	2019-05-16 15:11:44.157699994 -0300
+@@ -320,7 +320,8 @@
+ $config_str .= " -o Apt::Get::AllowUnauthenticated=true"
+ 	if (defined $noauth);
+ $config_str .= " -o Apt::Get::Download-Only=true";
+-$config_str .= " -o Apt::Install-Recommends=false"
++$config_str .= " -o Apt::Install-Recommends=false";
++$config_str .= " -o Acquire::AllowInsecureRepositories=yes"
+ 	if (not defined $allow_recommends);
+ $config_str .= " -o Dir=" . shellescape($dir);
+ $config_str .= " -o Dir::Etc=" . shellescape("${dir}${etcdir}");
