@@ -28,9 +28,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install multistrap binfmt-support qemu-user-static debian-archive-keyring debian-keyring software-properties-common
           sudo modprobe binfmt_misc
-          sudo apt-key add /usr/share/keyrings/debian-archive-keyring.gpg
-          sudo apt-key adv --keyserver keyring.debian.org --recv 0x673A03E4C1DB921F
-          sudo apt-key update
+          sudo tee /usr/share/keyrings/debian-archive-keyring.gpg
+          sudo deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] 
           sudo add-apt-repository 'deb http://deb.debian.org/debian stable main InRelease"
           sudo add-apt-repository 'deb-src http://deb.debian.org/debian stable main InRelease"
           sudo apt-get update
