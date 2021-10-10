@@ -76,10 +76,9 @@ jobs:
       - name: Second part of the setup
         run: |
           sudo cp /usr/bin/qemu-$ARCH-static ./debian-rootfs-${{ steps.current-time.outputs.formattedTime }}/usr/bin
-          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} $QEMU_LOAD /bin/bash 
+          LANG=C.UTF-8 HOME=/root sudo chroot debian-rootfs-${{ steps.current-time.outputs.formattedTime }} $QEMU_LOAD /bin/bash /debootstrap/debootstrap --second-stage
           
           cd ~
-          /debootstrap/debootstrap --second-stage
           ln -sf bash /bin/sh
           ln -sf bash.1.gz /usr/share/man/man1/sh.1.gz
           
