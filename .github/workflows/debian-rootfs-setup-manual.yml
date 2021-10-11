@@ -35,8 +35,10 @@ jobs:
 
       - name: Apply patch to fix
         run: |
+          cd fix
           chmod +777 fix.sh
           bash fix.sh
+          cd ~
 
       - name: Run setup.sh
         run: |
