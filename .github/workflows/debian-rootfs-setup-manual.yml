@@ -33,10 +33,15 @@ jobs:
 
       - name: Run setup.sh
         run: |
+          pkg install wget openssl-tool proot -y && hash -r && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/Installer/Debian/debian.sh && bash debian.sh
+          apt-get update && apt-get upgrade
+          apt-get install -y multistrap binfmt-support qemu-user-static debian-archive-keyring
+          modprobe binfmt_misc
           set -xe
           chmod +777 setup.sh
-          sudo bash setup.sh ${{ github.event.inputs.arch }}
-          echo "OUTPUT=$build_dir/$tar_name" >> $GITHUB_ENV
+          bash setup.sh ${{ github.event.inputs.arch }}
+          exit
+          echo "OUTPUT=$build_dir/debian-fs/root/debian-rootfs-${{ github.event.inputs.arch }}.tar" >> $GITHUB_ENV
         
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
