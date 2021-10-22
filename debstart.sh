@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-cd $(dirname $0)
+#cd $(dirname $0)
 unset LD_PRELOAD
 command="proot"
 command+=" -0"
