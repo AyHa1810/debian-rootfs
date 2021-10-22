@@ -26,12 +26,10 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install multistrap binfmt-support qemu-user-static debian-archive-keyring debian-keyring software-properties-common
+          sudo apt-get install -y --no-install-recommends multistrap binfmt-support qemu-user-static debian-archive-keyring
           sudo modprobe binfmt_misc
           sudo tee /usr/share/keyrings/debian-archive-keyring.gpg 
-          #sudo add-apt-repository 'deb [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg] http://deb.debian.org/debian stable main InRelease'
           sudo apt-get update
-        # [signed-by=/usr/share/keyrings/debian-archive-keyring.gpg]
 
       - name: Run setup.sh
         run: |
