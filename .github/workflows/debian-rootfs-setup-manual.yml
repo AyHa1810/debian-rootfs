@@ -33,7 +33,7 @@ jobs:
 
       - name: Run setup.sh
         run: |
-          sudo apt-get install wget proot -y && hash -r && wget "https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Rootfs/Debian/amd64/debian-rootfs-amd64.tar.xz" && tar -xJf debian-rootfs-amd64.tar.xz -C debian-rootfs
+          sudo apt-get install wget proot -y && hash -r && wget "https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Rootfs/Debian/amd64/debian-rootfs-amd64.tar.xz" && mkdir debian-rootfs && tar -xJf debian-rootfs-amd64.tar.xz -C debian-rootfs
           ./debstart.sh
           apt-get update && apt-get upgrade
           apt-get install -y multistrap binfmt-support qemu-user-static debian-archive-keyring
