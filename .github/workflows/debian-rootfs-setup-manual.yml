@@ -33,6 +33,7 @@ jobs:
 
       - name: Run setup.sh
         run: |
+          set -xe
           chmod +777 setup.sh
           sudo bash setup.sh ${{ github.event.inputs.arch }}
           echo "OUTPUT=$build_dir/$tar_name" >> $GITHUB_ENV
