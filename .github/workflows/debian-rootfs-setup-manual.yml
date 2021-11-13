@@ -33,15 +33,8 @@ jobs:
 
       - name: Run setup.sh
         run: |
-          sudo apt-get install wget proot -y && hash -r && wget "https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Rootfs/Debian/amd64/debian-rootfs-amd64.tar.xz" && mkdir debian-rootfs && tar -xJf debian-rootfs-amd64.tar.xz -C debian-rootfs
-          ./debstart.sh
-          apt-get update && apt-get upgrade
-          apt-get install -y multistrap binfmt-support qemu-user-static debian-archive-keyring
-          modprobe binfmt_misc
-          set -xe
-          chmod +777 setup.sh
+          sudo chmod +777 setup.sh
           bash setup.sh ${{ github.event.inputs.arch }}
-          exit
           echo "OUTPUT=$build_dir/debian-fs/root/debian-rootfs-${{ github.event.inputs.arch }}.tar" >> $GITHUB_ENV
         
       - name: Upload debian-rootfs
