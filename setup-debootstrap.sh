@@ -115,7 +115,7 @@ while getopts "harRie" opt; do
     esac
 done
 
-if [[ ! $release ]];
+if [[ ! $release ]]; then
     release=stable
 fi
 
