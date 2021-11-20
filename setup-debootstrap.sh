@@ -59,47 +59,65 @@ done
 # Get host architecture
 host_arch=`dpkg --print-architecture`
 
-while [ ! -z "$1" ]; do
-  case "$1" in
-     --arch|-a)
-         arch=$1
-         ;;
-     --release|-r)
-         release=$1
-         ;;
-     --repo|-R)
-         repo=$1
-         ;;
-     --include)
-         addpkg=$1
-         ;;
-     --exclude)
-         rmpkg=$1
-         ;;
-     *|--help|-h)
-         show_usage
-         ;;
-  esac
-shift
-done
-
 # Print usage
-#if [[ ! $1 || $1 == "-h" || $1 == "--help" ]]; then
 function show_usage (){
     running_script=`[[ $caller_script != NULL ]] && echo $caller_script ||\
     echo "source \`basename ${BASH_SOURCE[0]}\`"`
 
-    echo "usage: $running_script ARCHITECTURE [MULTISTRAP_CONF]"
-    echo "  ARCHITECTURE can be:"
+    echo "usage: $running_script [-harRie]"
+    echo ""
+    echo "Arguments:"
+    echo " -h, --help    : Shows this help menu."
+    echo " -a, --arch    : Sets the architecture to make the rootfs of."
+    echo " -r, --release : Sets the Debian rootfs release. (default: stable)"
+    echo " -R, --repo    : Gets packages from the given repository."
+    echo " -i, --include : Includes the packages to be installed in the rootfs."
+    echo " -e, --exclude : Excludes the packages to be not installed. (It is dangerous to exclude important packages.)"
+    echo ""
+    echo "  arch can be:"
     print_archs
-    echo "  MULTISTRAP_CONF is a multistrap configuration file"
-    echo "                  defaults to $conf_default"
-    echo "                  defaults to $conf_s390x for s390x"
-    echo "                  defaults to $conf_powerpcspe for powerpcspe"
     #$exit_or_return 1
 #fi
 return 0
 }
+
+# Command param arguments
+for param in "$@"; do
+    shift
+    case "$param" in
+        "--help") set -- "$@" "-h" ;;
+        "--arch") set -- "$@" "-a" ;;
+        "--release") set -- "$@" "-r" ;;
+        "--repo") set -- "$@" "-R" ;;
+        "--include") set -- "$@" "-i" ;;
+        "--exclude") set -- "$@" "-e" ;;
+        *) set -- "$@" "$param" ;;
+    esac
+done
+
+# Command flag arguments
+OPTIND=1
+while getopts "harRie" opt; do
+    case "$opt" in
+        "h")
+            show_usage
+            exit 0
+            ;;
+        "a") arch=$OPTARG ;;
+        "r") release=$OPTARG ;;
+        "R") repo=$OPTARG ;;
+        "i") include=$OPTARG ;;
+        "e") exclude=$OPTARG ;;
+        "?")
+             show_usage >&2
+             exit 1
+             ;;
+    esac
+done
+
+if [[ ! $release ]];
+    release=stable
+fi
 
 # Default packages
 case $arch in
@@ -119,15 +137,6 @@ if [[ ! $rmpkg ]]; then
 else
     excludepkg="--exclude $rmpkg"
 fi
-
-# User defined multistrap configuration file
-#if [[ $2 ]]; then
-#    conf_file=$2
-#    if [[ ! -f $conf_file ]]; then
-#        echo "$conf_file file does not exist"
-#        $exit_or_return 1
-#    fi
-#fi
 
 # Check architecture is suppported
 if [[ $arch != $host_arch ]]; then
