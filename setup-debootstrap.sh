@@ -228,6 +228,11 @@ else
     chroot $build_dir/$rootfs_dir_utc dpkg --configure -a
 fi
 
+# Run debootstrap second stage if it exists
+if [[ -f "$build_dir/$rootfs_dir_utc/debootstrap/debootstrap" ]]; then
+    chroot $build_dir/$rootfs_dir_utc /debootstrap/debootstrap --second-stage
+fi
+
 # Empty root password
 chroot $build_dir/$rootfs_dir_utc passwd -d root
 
