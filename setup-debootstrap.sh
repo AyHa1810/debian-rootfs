@@ -95,6 +95,7 @@ while [[ $# -gt 0 ]]; do
         "-R"|"--repo"     ) repo="$1"; shift;;
         "-i"|"--include"  ) include="$1"; shift;;
         "-e"|"--exclude"  ) exclude="$1"; shift;;
+	"-v"|"--variant"  ) variant="$1"; shift ;;
         *                 ) show_usage >&2
                             exit 1;;
     esac
@@ -102,6 +103,14 @@ done
 
 if [[ ! $release ]]; then
     release=stable
+fi
+
+if [[ ! $repo ]]; then
+    repo=http://ftp.debian.org/debian/
+fi
+
+if [[ ! $variant ]]; then
+    variant=minbase
 fi
 
 # Default packages
@@ -178,25 +187,25 @@ if [[ $arch == $host_arch ]]; then
     mount --bind /dev $build_dir/$rootfs_dir_utc/dev
 
     # Create root file system and configure debian packages
-    if debootstrap --verbose --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
+    if debootstrap --verbose --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" "$repo"
     then
-        echo "debootstrap finished"
+        echo "debootstrap successfully finished"
     else
     #if [[ $? != 0 ]]; then
         echo "debootstrap failed"
-        umount $build_dir/$rootfs_dir_utc/dev
-        rm -rf $build_dir/$rootfs_dir_utc
+        umount "$build_dir/$rootfs_dir_utc/dev"
+        rm -rf "$build_dir/$rootfs_dir_utc"
         exit 1
     fi
 else
     # Create root file system
-    if debootstrap --verbose --foreign --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
+    if debootstrap --verbose --variant=$variant --foreign --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" "$repo"
     then
-        echo "debootstrap finished"
+        echo "debootstrap successfully finished"
     else
     #if [[ $? != 0 ]]; then
         echo "debootstrap failed"
-        rm -rf $build_dir/$rootfs_dir_utc
+        rm -rf "$build_dir/$rootfs_dir_utc"
         exit 1
     fi
 
@@ -208,28 +217,28 @@ else
     cp $qemu_path $build_dir/$rootfs_dir_utc$qemu_path
 
     # Mount /dev in rootfs
-    mount --bind /dev $build_dir/$rootfs_dir_utc/dev
+    mount --bind /dev "$build_dir/$rootfs_dir_utc/dev"
 
     # Complete the configure of dash
-    chroot $build_dir/$rootfs_dir_utc /var/lib/dpkg/info/dash.preinst install
+    chroot "$build_dir/$rootfs_dir_utc" /var/lib/dpkg/info/dash.preinst install
 
     # Configure debian packages
-    chroot $build_dir/$rootfs_dir_utc dpkg --configure -a
+    chroot "$build_dir/$rootfs_dir_utc" dpkg --configure -a
 fi
 
 # Run debootstrap second stage if it exists
 if [[ -f "$build_dir/$rootfs_dir_utc/debootstrap/debootstrap" ]]; then
-    chroot $build_dir/$rootfs_dir_utc /debootstrap/debootstrap --second-stage
+    chroot "$build_dir/$rootfs_dir_utc" /debootstrap/debootstrap --second-stage
 fi
-
-# Install packages
-chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install $includepkg"
 
 # Empty root password
 chroot $build_dir/$rootfs_dir_utc passwd -d root
 
 # Get packages installed
 chroot $build_dir/$rootfs_dir_utc dpkg -l | awk '{if (NR>3) {print $2" "$3}}' > $build_dir/$rootfs_dir_utc\-packages
+
+# Install packages
+chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install $includepkg"
 
 # Clean bash history
 chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
