@@ -4,9 +4,9 @@
 
 dependencies=( debootstrap binfmt-support qemu-user-static )
 ssh_packages=( ssh openssh-server )
-debpkg_default=packages=kmod,dbus,apt,apt-utils,dialog,net-tools,iproute,iputils-ping,ifupdown,ssh,nano,pciutils,i2c-tools,dosfstools
-debpkg_powerpcspe=systemd-sysv,udev,kmod,dbus,apt,apt-utils,dialog,debian-ports-archive-keyring,net-tools,iproute,iputils-ping,ifupdown,ssh,nano,pciutils,i2c-tools,dosfstools
-debpkg_s390x=kmod,dbus,apt,apt-utils,dialog,net-tools,iproute,iputils-ping,ifupdown,openssh-client,nano,pciutils,i2c-tools,dosfstools
+debpkg_default=packages='kmod dbus apt apt-utils dialog net-tools iproute iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools'
+debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils dialog debian-ports-archive-keyring net-tools iproute iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools'
+debpkg_s390x='kmod dbus apt apt-utils dialog net-tools iproute iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools'
 rootfs_suffix=debian-rootfs
 
 # Available architectures with their associated qemu
@@ -39,8 +39,8 @@ print_archs() {
 #fi
 
 # Get caller script
-#caller_script=`basename $(caller | awk '{print $2}')`
-#exit_or_return=`[[ $caller_script != NULL ]] && echo exit|| echo return`
+caller_script=`basename $(caller | awk '{print $2}')`
+exit_or_return=`[[ $caller_script != NULL ]] && echo exit|| echo return`
 
 # Make sure only root can run our script
 if [[ $(id -u) != 0 ]]; then
@@ -81,40 +81,7 @@ function show_usage (){
 return 0
 }
 
-# Command param arguments
-#for param in "$@"; do
-#    shift
-#    case "$param" in
-#        "--help") set -- "$@" "-h" ;;
-#        "--arch") set -- "$@" "-a" ;;
-#        "--release") set -- "$@" "-r" ;;
-#        "--repo") set -- "$@" "-R" ;;
-#        "--include") set -- "$@" "-i" ;;
-#        "--exclude") set -- "$@" "-e" ;;
-#        *) set -- "$@" "$param" ;;
-#    esac
-#done
-
-# Command flag arguments
-#OPTIND=1
-#while getopts "h:a:r:R:i:e:?" opt; do
-#    case "$opt" in
-#        "h")
-#            show_usage
-#            exit 0
-#            ;;
-#        "a") arch=$OPTARG ;;
-#        "r") release=$OPTARG ;;
-#        "R") repo=$OPTARG ;;
-#        "i") include=$OPTARG ;;
-#        "e") exclude=$OPTARG ;;
-#        "?")
-#             show_usage >&2
-#             exit 1
-#             ;;
-#    esac
-#done
-
+# Set command arguments
 while [[ $# -gt 0 ]]; do
     opt="$1"
     shift;
@@ -123,15 +90,15 @@ while [[ $# -gt 0 ]]; do
         echo "WARNING: You may have left an argument blank. Double check your command." 
     fi
     case "$opt" in
-        "-h"|"--help"|"?"  ) show_usage
-                             exit 0;;
-        "-a"|"--arch"      ) arch="$1"; shift;;
-        "-r"|"--release"   ) release="$1"; shift;;
-        "-R"|"--repo"      ) repo="$1"; shift;;
-        "-i"|"--include"   ) include="$1"; shift;;
-        "-e"|"--exclude"   ) exclude="$1"; shift;;
-        *                  ) show_usage >&2
-                             exit 1;;
+        "-h"|"--help"|"?" ) show_usage
+                            exit 0;;
+        "-a"|"--arch"     ) arch="$1"; shift;;
+        "-r"|"--release"  ) release="$1"; shift;;
+        "-R"|"--repo"     ) repo="$1"; shift;;
+        "-i"|"--include"  ) include="$1"; shift;;
+        "-e"|"--exclude"  ) exclude="$1"; shift;;
+        *                 ) show_usage >&2
+                            exit 1;;
     esac
 done
 
@@ -147,9 +114,9 @@ case $arch in
 esac
 
 if [[ ! $addpkg ]]; then
-    includepkg="--include $instpkgs"
+    includepkg="$instpkgs"
 else
-    includepkg="--include $instpkgs,$addpkg"
+    includepkg="$instpkgs $addpkg"
 fi
 
 if [[ ! $rmpkg ]]; then
@@ -163,7 +130,7 @@ if [[ $arch != $host_arch ]]; then
     if [[ ! ${qemu_static[$arch]} ]]; then
         echo "$arch not valid, architectures supported are:"
         print_archs
-        $exit_or_return 1
+        #exit_or_return 1
     fi
     
     # Find qemu binary
@@ -179,7 +146,7 @@ if [[ $arch != $host_arch ]]; then
             for i in ${ssh_packages[@]}; do
 	        if grep -q "\b$i\b" $conf_file; then
                     echo "$i package in $conf_file cannot be installed for s390x"
-                    $exit_or_return 1
+                    #exit_or_return 1
                 fi
             done
             ;;
@@ -213,9 +180,11 @@ if [[ $arch == $host_arch ]]; then
     mount --bind /dev $build_dir/$rootfs_dir_utc/dev
 
     # Create root file system and configure debian packages
-    #multistrap -d $build_dir/$rootfs_dir_utc -a $arch -f $conf_file
-    debootstrap --arch $arch $includepkg $excludepkg $release $build_dir/$rootfs_dir_utc $repo
-    if [[ $? != 0 ]]; then
+    if debootstrap --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
+    then
+        echo "debootstrap finished"
+    else
+    #if [[ $? != 0 ]]; then
         echo "debootstrap failed"
         umount $build_dir/$rootfs_dir_utc/dev
         rm -rf $build_dir/$rootfs_dir_utc
@@ -223,9 +192,11 @@ if [[ $arch == $host_arch ]]; then
     fi
 else
     # Create root file system
-    #multistrap -d $build_dir/$rootfs_dir_utc -a $arch -f $conf_file
-    debootstrap --foreign --arch $arch $includepkg $excludepkg $release $build_dir/$rootfs_dir_utc $repo
-    if [[ $? != 0 ]]; then
+    if debootstrap --foreign --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
+    then
+        echo "debootstrap finished"
+    else
+    #if [[ $? != 0 ]]; then
         echo "debootstrap failed"
         rm -rf $build_dir/$rootfs_dir_utc
         exit 1
@@ -253,11 +224,17 @@ if [[ -f "$build_dir/$rootfs_dir_utc/debootstrap/debootstrap" ]]; then
     chroot $build_dir/$rootfs_dir_utc /debootstrap/debootstrap --second-stage
 fi
 
+# Install packages
+chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install $includepkg"
+
 # Empty root password
 chroot $build_dir/$rootfs_dir_utc passwd -d root
 
 # Get packages installed
 chroot $build_dir/$rootfs_dir_utc dpkg -l | awk '{if (NR>3) {print $2" "$3}}' > $build_dir/$rootfs_dir_utc\-packages
+
+# Clean bash history
+chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
 
 # Kill processes running in rootfs
 fuser -sk $build_dir/$rootfs_dir_utc
