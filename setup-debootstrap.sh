@@ -224,7 +224,7 @@ if [[ $arch == $host_arch ]]; then
 else
     # Create root file system
     #multistrap -d $build_dir/$rootfs_dir_utc -a $arch -f $conf_file
-    debootstrap --arch $arch $includepkg $excludepkg $release $build_dir/$rootfs_dir_utc $repo
+    debootstrap --foreign --arch $arch $includepkg $excludepkg $release $build_dir/$rootfs_dir_utc $repo
     if [[ $? != 0 ]]; then
         echo "debootstrap failed"
         rm -rf $build_dir/$rootfs_dir_utc
