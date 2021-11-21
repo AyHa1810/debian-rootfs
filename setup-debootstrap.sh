@@ -178,7 +178,7 @@ if [[ $arch == $host_arch ]]; then
     mount --bind /dev $build_dir/$rootfs_dir_utc/dev
 
     # Create root file system and configure debian packages
-    if debootstrap --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
+    if debootstrap --verbose --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
     then
         echo "debootstrap finished"
     else
@@ -190,7 +190,7 @@ if [[ $arch == $host_arch ]]; then
     fi
 else
     # Create root file system
-    if debootstrap --foreign --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
+    if debootstrap --verbose --foreign --arch $arch $excludepkg $release $build_dir/$rootfs_dir_utc $repo
     then
         echo "debootstrap finished"
     else
