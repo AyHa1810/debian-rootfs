@@ -76,9 +76,7 @@ function show_usage (){
     echo ""
     echo "  arch can be:"
     print_archs
-    #$exit_or_return 1
-#fi
-return 0
+$exit_or_return 0
 }
 
 # Set command arguments
@@ -130,7 +128,7 @@ if [[ $arch != $host_arch ]]; then
     if [[ ! ${qemu_static[$arch]} ]]; then
         echo "$arch not valid, architectures supported are:"
         print_archs
-        #exit_or_return 1
+        $exit_or_return 1
     fi
     
     # Find qemu binary
@@ -146,7 +144,7 @@ if [[ $arch != $host_arch ]]; then
             for i in ${ssh_packages[@]}; do
 	        if grep -q "\b$i\b" $conf_file; then
                     echo "$i package in $conf_file cannot be installed for s390x"
-                    #exit_or_return 1
+                    $exit_or_return 1
                 fi
             done
             ;;
