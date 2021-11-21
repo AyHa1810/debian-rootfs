@@ -82,36 +82,56 @@ return 0
 }
 
 # Command param arguments
-for param in "$@"; do
-    shift
-    case "$param" in
-        "--help") set -- "$@" "-h" ;;
-        "--arch") set -- "$@" "-a" ;;
-        "--release") set -- "$@" "-r" ;;
-        "--repo") set -- "$@" "-R" ;;
-        "--include") set -- "$@" "-i" ;;
-        "--exclude") set -- "$@" "-e" ;;
-        *) set -- "$@" "$param" ;;
-    esac
-done
+#for param in "$@"; do
+#    shift
+#    case "$param" in
+#        "--help") set -- "$@" "-h" ;;
+#        "--arch") set -- "$@" "-a" ;;
+#        "--release") set -- "$@" "-r" ;;
+#        "--repo") set -- "$@" "-R" ;;
+#        "--include") set -- "$@" "-i" ;;
+#        "--exclude") set -- "$@" "-e" ;;
+#        *) set -- "$@" "$param" ;;
+#    esac
+#done
 
 # Command flag arguments
-OPTIND=1
-while getopts "harRie" opt; do
+#OPTIND=1
+#while getopts "h:a:r:R:i:e:?" opt; do
+#    case "$opt" in
+#        "h")
+#            show_usage
+#            exit 0
+#            ;;
+#        "a") arch=$OPTARG ;;
+#        "r") release=$OPTARG ;;
+#        "R") repo=$OPTARG ;;
+#        "i") include=$OPTARG ;;
+#        "e") exclude=$OPTARG ;;
+#        "?")
+#             show_usage >&2
+#             exit 1
+#             ;;
+#    esac
+#done
+
+while [[ $# -gt 0 ]]; do
+    opt="$1"
+    shift;
+    current_arg="$1"
+    if [[ "$current_arg" =~ ^-{1,2}.* ]]; then
+        echo "WARNING: You may have left an argument blank. Double check your command." 
+    fi
     case "$opt" in
-        "h")
-            show_usage
-            exit 0
-            ;;
-        "a") arch=$OPTARG ;;
-        "r") release=$OPTARG ;;
-        "R") repo=$OPTARG ;;
-        "i") include=$OPTARG ;;
-        "e") exclude=$OPTARG ;;
-        "?")
-             show_usage >&2
-             exit 1
-             ;;
+        "-h"|"--help"|"?"  ) show_usage
+                             exit 0;;
+        "-a"|"--arch"      ) arch="$1"; shift;;
+        "-r"|"--release"   ) release="$1"; shift;;
+        "-R"|"--repo"      ) repo="$1"; shift;;
+        "-i"|"--include"   ) include="$1"; shift;;
+        "-e"|"--exclude"   ) exclude="$1"; shift;;
+        *                  ) show_usage >&2
+                             exit 1;;
     esac
 done
 
