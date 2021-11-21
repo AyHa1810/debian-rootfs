@@ -11,7 +11,7 @@ rootfs_suffix=debian-rootfs
 
 # Available architectures with their associated qemu
 declare -A qemu_static
-#qemu_static[amd64]=qemu-x86_64-static => see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=703825
+qemu_static[amd64]=qemu-x86_64-static #=> see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=703825
 qemu_static[arm64]=qemu-aarch64-static
 qemu_static[armel]=qemu-arm-static
 qemu_static[armhf]=qemu-arm-static
