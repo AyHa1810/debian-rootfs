@@ -175,6 +175,12 @@ utc_time=`date -u -d"$(wget -qO- --save-headers http://www.debian.org |\
             sed '/^Date: /!d;s///;q')" +%Y%m%dT%H%M%SZ`
 rootfs_dir_utc=$rootfs_dir-$utc_time
 
+# Log the output into a file
+log_file=build/log/$rootfs_dir_utc.log
+exec 3>&1 4>&2
+trap 'exec 2>&4 1>&3' 0 1 2 3
+exec 1>$log_file 2>&1
+
 # Cleanup when interrupt signal is received
 trap "umount $build_dir/$rootfs_dir_utc/dev; exit 1" SIGINT
 
