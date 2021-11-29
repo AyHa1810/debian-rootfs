@@ -187,10 +187,10 @@ trap "umount $build_dir/$rootfs_dir_utc/dev; exit 1" SIGINT
 
 if [[ $arch == $host_arch ]]; then
     # Create /dev in rootfs
-    mkdir -p $build_dir/$rootfs_dir_utc/dev 2>/dev/null
+    #mkdir -p $build_dir/$rootfs_dir_utc/dev 2>/dev/null
 
     # Mount /dev in rootfs
-    mount --bind /dev $build_dir/$rootfs_dir_utc/dev
+    #mount --bind /dev $build_dir/$rootfs_dir_utc/dev
 
     # Create root file system and configure debian packages
     if debootstrap --verbose --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" "$repo"
