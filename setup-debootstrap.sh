@@ -4,7 +4,7 @@
 
 dependencies=( debootstrap binfmt-support qemu-user-static )
 ssh_packages=( ssh openssh-server )
-debpkg_default=packages='kmod dbus apt apt-utils dialog net-tools iproute iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools'
+debpkg_default='kmod dbus apt apt-utils dialog net-tools iproute iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools'
 debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils dialog debian-ports-archive-keyring net-tools iproute iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools'
 debpkg_s390x='kmod dbus apt apt-utils dialog net-tools iproute iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools'
 rootfs_suffix=debian-rootfs
@@ -187,8 +187,7 @@ rootfs_dir_utc=$rootfs_dir-$utc_time
 log_file=build/logs/$rootfs_dir_utc.log
 exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>$log_file 2>&1 1>&3
-set -x
+exec 1>$log_file 2>&1 1>&3 2>&3
 
 # Cleanup when interrupt signal is received
 trap exumount SIGINT
@@ -266,7 +265,7 @@ chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrad
 chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
 
 # Kill processes running in rootfs
-fuser -sk $build_dir/$rootfs_dir_utc
+#fuser -sk $build_dir/$rootfs_dir_utc
 
 # Remove qemu binary from rootfs
 rm $build_dir/$rootfs_dir_utc$qemu_path 2>/dev/null
