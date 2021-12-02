@@ -11,7 +11,7 @@ rootfs_suffix=debian-rootfs
 
 # Available architectures with their associated qemu
 declare -A qemu_static
-qemu_static[amd64]=qemu-x86_64-static #=> see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=703825
+#qemu_static[amd64]=qemu-x86_64-static #=> see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=703825
 qemu_static[arm64]=qemu-aarch64-static
 qemu_static[armel]=qemu-arm-static
 qemu_static[armhf]=qemu-arm-static
@@ -23,6 +23,7 @@ qemu_static[powerpcspe]=qemu-ppc-static
 qemu_static[ppc64el]=qemu-ppc64le-static
 qemu_static[s390x]=qemu-s390x-static
 
+# Prints the archs list
 print_archs() {
     echo "    - $host_arch"
     for i in ${!qemu_static[@]}; do
@@ -73,6 +74,7 @@ function show_usage (){
     echo " -R, --repo    : Gets packages from the given repository."
     echo " -i, --include : Includes the packages to be installed in the rootfs."
     echo " -e, --exclude : Excludes the packages to be not installed. (It is dangerous to exclude important packages.)"
+    echo " -v, --variant : Sets the variant of debian to install."
     echo ""
     echo "  arch can be:"
     print_archs
@@ -100,6 +102,10 @@ while [[ $# -gt 0 ]]; do
                             exit 1;;
     esac
 done
+
+if [[ ! $arch ]]; then
+    arch=$host_arch
+fi
 
 if [[ ! $release ]]; then
     release=stable
@@ -161,8 +167,10 @@ if [[ $arch != $host_arch ]]; then
 fi
 
 # Create build directory
-build_dir=build/$arch
+main_dir=build
+build_dir=$main_dir/$arch
 mkdir -p $build_dir 2>/dev/null
+mkdir -p $main_dir/logs 2>/dev/null
 
 # Set rootfs directory
 rootfs_dir=$rootfs_suffix\-$arch
@@ -176,14 +184,22 @@ utc_time=`date -u -d"$(wget -qO- --save-headers http://www.debian.org |\
 rootfs_dir_utc=$rootfs_dir-$utc_time
 
 # Log the output into a file
-log_file=build/log/$rootfs_dir_utc.log
+log_file=build/logs/$rootfs_dir_utc.log
 exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>$log_file 2>&1
+exec 1>$log_file 2>&1 1>&3
+set -x
 
 # Cleanup when interrupt signal is received
-trap "umount $build_dir/$rootfs_dir_utc/dev; exit 1" SIGINT
+trap exumount SIGINT
 
+function exumount() {
+    if mount | grep $build_dir/$rootfs_dir_utc/dev > /dev/null; then
+        umount $build_dir/$rootfs_dir_utc/dev; exit 1
+    else
+        :
+    fi
+}
 
 if [[ $arch == $host_arch ]]; then
     # Create /dev in rootfs
@@ -256,7 +272,9 @@ fuser -sk $build_dir/$rootfs_dir_utc
 rm $build_dir/$rootfs_dir_utc$qemu_path 2>/dev/null
 
 # Umount /dev in rootfs
-umount $build_dir/$rootfs_dir_utc/dev
+if mount | grep $build_dir/$rootfs_dir_utc/dev > /dev/null; then
+  umount $build_dir/$rootfs_dir_utc/dev
+fi
 
 # Latest rootfs is the current one
 ln -sfn $rootfs_dir_utc $build_dir/$rootfs_dir
@@ -266,7 +284,7 @@ ln -sfn $rootfs_dir_utc $build_dir/$rootfs_dir
 
 # Set hostname
 filename=$build_dir/$rootfs_dir/etc/hostname
-echo $arch > $filename
+echo "debian" > $filename
 
 # DNS.WATCH servers
 filename=$build_dir/$rootfs_dir/etc/resolv.conf
