@@ -259,7 +259,7 @@ chroot $build_dir/$rootfs_dir_utc passwd -d root
 chroot $build_dir/$rootfs_dir_utc dpkg -l | awk '{if (NR>3) {print $2" "$3}}' > $build_dir/$rootfs_dir_utc\-packages
 
 # Install packages
-chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install $includepkg"
+chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install -y $includepkg"
 
 # Clean bash history
 chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
