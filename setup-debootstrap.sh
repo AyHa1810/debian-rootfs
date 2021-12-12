@@ -199,8 +199,7 @@ if [[ -f "./log4bash.sh" ]]; then
             else 
 	        log "$line"
 		return 0
-	    fi 
-	    | tee -a $LOG_FILE 
+	    fi | tee -a $LOG_FILE 
 	done
     )
     exec 2> >(while read -r line; do log_error "$line" | tee -a $LOG_FILE; done >&2)
