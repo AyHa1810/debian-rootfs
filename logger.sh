@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SCRIPT_LOG=$log
+SCRIPT_LOG=$LOG_FILE
 touch $SCRIPT_LOG
 
 function SCRIPTENTRY(){
