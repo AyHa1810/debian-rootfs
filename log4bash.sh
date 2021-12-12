@@ -70,7 +70,7 @@ log() {
     [[ -z ${log_level} ]] && log_level="INFO";
     [[ -z ${log_color} ]] && log_color="${LOG_INFO_COLOR}";
 
-    echo -e "${log_color}[$(date +"%Y-%m-%d %H:%M:%S %Z")] [${log_level}] ${log_text} ${LOG_DEFAULT_COLOR}";
+    echo -e "${log_color}[$(date +"%Y-%m-%d %H:%M:%S %Z")] [${log_level}]: ${log_text} ${LOG_DEFAULT_COLOR}";
     return 0;
 }
 
