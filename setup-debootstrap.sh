@@ -285,6 +285,19 @@ ln -sfn $rootfs_dir_utc $build_dir/$rootfs_dir
 filename=$build_dir/$rootfs_dir/etc/hostname
 echo "debian" > $filename
 
+# Set hosts
+filename=$build_dir/$rootfs_dir/etc/hosts
+echo "127.0.0.1 localhost" > $filename
+echo "127.0.1.1 debian" >> $filename
+echo >> $filename
+echo "# The following lines are desirable for IPv6 capable hosts" >> $filename
+echo "::1 ip6-localhost ip6-loopback"
+echo "fe00::0 ip6-localnet" >> $filename
+echo "ff00::0 ip6-mcastprefix" >> $filename
+echo "ff02::1 ip6-allnodes" >> $filename
+echo "ff02::2 ip6-allrouters" >> $filename
+echo "ff02::3 ip6-allhosts" >> $filename
+
 # DNS.WATCH servers
 filename=$build_dir/$rootfs_dir/etc/resolv.conf
 echo "# DNS.WATCH servers" > $filename
