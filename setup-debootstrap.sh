@@ -104,7 +104,10 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ! $arch ]]; then
-    arch=$host_arch
+    case $host_arch in
+        aarch64) arch=arm64 ;;
+        *) arch=$host_arch
+    esac
 fi
 
 if [[ ! $release ]]; then
