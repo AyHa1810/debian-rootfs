@@ -291,7 +291,7 @@ echo "127.0.0.1 localhost" > $filename
 echo "127.0.1.1 debian" >> $filename
 echo >> $filename
 echo "# The following lines are desirable for IPv6 capable hosts" >> $filename
-echo "::1 ip6-localhost ip6-loopback"
+echo "::1 ip6-localhost ip6-loopback" >> $filename
 echo "fe00::0 ip6-localnet" >> $filename
 echo "ff00::0 ip6-mcastprefix" >> $filename
 echo "ff02::1 ip6-allnodes" >> $filename
