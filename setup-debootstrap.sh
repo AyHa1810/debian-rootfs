@@ -186,11 +186,18 @@ utc_time=`date -u -d"$(wget -qO- --save-headers http://www.debian.org |\
             sed '/^Date: /!d;s///;q')" +%Y%m%dT%H%M%SZ`
 rootfs_dir_utc=$rootfs_dir-$utc_time
 
-# Log the output into a file
-log_file=build/logs/$rootfs_dir_utc.log
-exec 3>&1 4>&2
-trap 'exec 2>&4 1>&3' 0 1 2 3
-exec 1>$log_file 2>&1 1>&3 2>&3
+# Log the output into a file (best one I tried yet)
+LOG_FILE=build/logs/$rootfs_dir_utc.log
+exec > >(while read -r line; do printf '%s %s\n' "$(date --rfc-3339=seconds)" "$line" | tee -a $LOG_FILE; done)
+exec 2> >(while read -r line; do printf '%s %s\n' "$(date --rfc-3339=seconds)" "$line" | tee -a $LOG_FILE; done >&2)
+
+# Previous ones I tried :P
+#exec 3>&1 4>&2
+#trap 'exec 2>&4 1>&3' 0 1 2 3
+#exec 1>$LOG_FILE 2>&1 
+
+#exec > >(tee -a ${LOG_FILE} )
+#exec 2> >(tee -a ${LOG_FILE} >&2)
 
 # Cleanup when interrupt signal is received
 trap exumount SIGINT
