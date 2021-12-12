@@ -26,16 +26,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends multistrap binfmt-support qemu-user-static debian-archive-keyring
+          sudo apt-get install -y debootstrap binfmt-support qemu-user-static debian-archive-keyring
           sudo modprobe binfmt_misc
-          sudo tee /usr/share/keyrings/debian-archive-keyring.gpg 
+          #sudo tee /usr/share/keyrings/debian-archive-keyring.gpg 
           sudo apt-get update
 
-      - name: Run setup.sh
+      - name: Run setup-debootstrap.sh
         run: |
-          sudo chmod +777 setup.sh
-          bash setup.sh ${{ github.event.inputs.arch }}
-          echo "OUTPUT=$build_dir/debian-fs/root/debian-rootfs-${{ github.event.inputs.arch }}.tar" >> $GITHUB_ENV
+          sudo chmod +x setup-debootstrap.sh
+          bash setup-debootstrap.sh --arch ${{ github.event.inputs.arch }}
+          echo "OUTPUT=$(find "./build/${{ github.event.inputs.arch }}" -name "*.tar.gz" -print) >> $GITHUB_ENV
         
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
