@@ -16,7 +16,7 @@ SCRIPT_BASE_DIR="$(cd "$( dirname "$0")" && pwd )"
 
 # This should probably be the right way - didn't have time to experiment though
 # declare -r INTERACTIVE_MODE="$([ tty --silent ] && echo on || echo off)"
-declare -r INTERACTIVE_MODE=$([ "$(uname)" == "Darwin" ] && echo "on" || echo "off")
+declare -r INTERACTIVE_MODE=$([ "$(uname)" != "Darwin" ] && echo "on" || echo "off")
 
 #--------------------------------------------------------------------------------------------------
 # Begin Help Section
