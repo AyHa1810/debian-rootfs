@@ -39,7 +39,7 @@ I want to add stuff like
 - [ ] a proper nice lookin logging system (doesn't make sense but eh)
 
 ## Related
-- [debian-rootfs](https://github.com/jubinson/debian-rootfs) by [@jubinson](https://github.com/jubinson/debian-rootfs) (MIT)
+- [debian-rootfs](https://github.com/jubinson/debian-rootfs) by [@jubinson](https://github.com/jubinson) (MIT)
 - [log4bash](https://github.com/fredpalmer/log4bash) by [@fredpalmer](https://github.com/fredpalmer) (BSD 3-Clause)
 - [multistrap](https://wiki.debian.org/Multistrap) (GNU GPL v3)
 - [debootstrap](https://wiki.debian.org/Debootstrap) (GNU GPL v2)
