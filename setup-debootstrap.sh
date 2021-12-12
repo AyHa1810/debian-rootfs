@@ -190,7 +190,7 @@ rootfs_dir_utc=$rootfs_dir-$utc_time
 LOG_FILE=build/logs/$rootfs_dir_utc.log
 if [[ -f "./log4bash.sh" ]]; then
     source ./log4bash.sh
-    exec > >(while read -r line; if echo "$line" | grep -q 'w:\|warning:'; then do log_warning "$line" else do log "$line" fi | tee -a $LOG_FILE; done)
+    exec > >(while read -r line; do if echo "$line" | grep -q 'w:\|warning:'; then log_warning "$line" else log "$line" fi | tee -a $LOG_FILE; done)
     exec 2> >(while read -r line; do log_error "$line" | tee -a $LOG_FILE; done >&2)
 fi
 
