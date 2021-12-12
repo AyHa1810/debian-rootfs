@@ -188,8 +188,8 @@ rootfs_dir_utc=$rootfs_dir-$utc_time
 
 # Log the output into a file (best one I tried yet)
 LOG_FILE=build/logs/$rootfs_dir_utc.log
-exec > >(while read -r line; do printf '%s %s\n' "$(date --rfc-3339=seconds)" "$line" | tee -a $LOG_FILE; done)
-exec 2> >(while read -r line; do printf '%s %s\n' "$(date --rfc-3339=seconds)" "$line" | tee -a $LOG_FILE; done >&2)
+exec > >(while read -r line; do printf '%s %s\n' "$(date --utc +"%Y-%m-%d %H:%M:%S")" "INFO:" "$line" | tee -a $LOG_FILE; done)
+exec 2> >(while read -r line; do printf '%s %s\n' "$(date --utc +"%Y-%m-%d %H:%M:%S")" "ERROR:" "$line" | tee -a $LOG_FILE; done >&2)
 
 # Previous ones I tried :P
 #exec 3>&1 4>&2
