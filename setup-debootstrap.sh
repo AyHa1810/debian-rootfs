@@ -195,10 +195,8 @@ if [[ -f "./log4bash.sh" ]]; then
 	do 
 	    if echo "$line" | grep -q 'w:\|warning:'; then 
 	        log_warning "$line" 
-		return 0
             else 
 	        log "$line"
-		return 0
 	    fi | tee -a $LOG_FILE 
 	done
     )
