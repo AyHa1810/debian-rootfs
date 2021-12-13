@@ -4,7 +4,7 @@
 
 dependencies=( debootstrap binfmt-support qemu-user-static )
 ssh_packages=( ssh openssh-server )
-debpkg_default='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools man-db wget'
+debpkg_default='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools'
 debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils dialog debian-ports-archive-keyring net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools man-db wget'
 debpkg_s390x='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools man-db wget'
 rootfs_suffix=debian-rootfs
@@ -59,6 +59,10 @@ done
 
 # Get host architecture
 host_arch=`dpkg --print-architecture`
+case $host_arch in
+    aarch64) host_arch=arm64 ;;
+    *) $host_arch=$host_arch
+esac
 
 # Print usage
 function show_usage (){
@@ -104,10 +108,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ ! $arch ]]; then
-    case $host_arch in
-        aarch64) arch=arm64 ;;
-        *) arch=$host_arch
-    esac
+    arch=$host_arch
 fi
 
 if [[ ! $release ]]; then
@@ -195,6 +196,8 @@ if [[ -f "./log4bash.sh" ]]; then
 	do 
 	    if echo "$line" | grep -q 'w:\|warning:'; then 
 	        log_warning "$line" 
+            elif echo "$line" | grep -q 'e:\|error:'; then 
+                log_error "$line"
             else 
 	        log "$line"
 	    fi | tee -a $LOG_FILE 
@@ -215,11 +218,11 @@ fi
 #exec 2> >(tee -a ${LOG_FILE} >&2)
 
 # Cleanup when interrupt signal is received
-trap exumount SIGINT
+trap 'exumount; exit 1' SIGINT
 
 function exumount() {
     if mount | grep $build_dir/$rootfs_dir_utc/dev > /dev/null; then
-        umount $build_dir/$rootfs_dir_utc/dev; exit 1
+        umount $build_dir/$rootfs_dir_utc/dev
     else
         :
     fi
@@ -238,8 +241,9 @@ if [[ $arch == $host_arch ]]; then
         echo "debootstrap successfully finished"
     else
     #if [[ $? != 0 ]]; then
-        echo "debootstrap failed"
-        umount "$build_dir/$rootfs_dir_utc/dev"
+        echo "debootstrap failed" >&2
+        #umount "$build_dir/$rootfs_dir_utc/dev"
+        exumount
         rm -rf "$build_dir/$rootfs_dir_utc"
         exit 1
     fi
@@ -250,7 +254,7 @@ else
         echo "debootstrap successfully finished"
     else
     #if [[ $? != 0 ]]; then
-        echo "debootstrap failed"
+        echo "debootstrap failed" >&2
         rm -rf "$build_dir/$rootfs_dir_utc"
         exit 1
     fi
