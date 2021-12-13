@@ -61,7 +61,7 @@ done
 host_arch=`dpkg --print-architecture`
 case $host_arch in
     aarch64) host_arch=arm64 ;;
-    *) $host_arch=$host_arch
+    *) host_arch=$host_arch
 esac
 
 # Print usage
@@ -69,7 +69,7 @@ function show_usage (){
     running_script=`[[ $caller_script != NULL ]] && echo $caller_script ||\
     echo "source \`basename ${BASH_SOURCE[0]}\`"`
 
-    echo "usage: $running_script [-harRie]"
+    echo "usage: $running_script [-harRiev?]"
     echo ""
     echo "Arguments:"
     echo " -h, --help    : Shows this help menu."
@@ -95,7 +95,7 @@ while [[ $# -gt 0 ]]; do
     fi
     case "$opt" in
         "-h"|"--help"|"?" ) show_usage
-                            exit 0;;
+                            $exit_or_return 0;;
         "-a"|"--arch"     ) arch="$1"; shift;;
         "-r"|"--release"  ) release="$1"; shift;;
         "-R"|"--repo"     ) repo="$1"; shift;;
@@ -103,7 +103,7 @@ while [[ $# -gt 0 ]]; do
         "-e"|"--exclude"  ) exclude="$1"; shift;;
 	"-v"|"--variant"  ) variant="$1"; shift ;;
         *                 ) show_usage >&2
-                            exit 1;;
+                            $exit_or_return 1;;
     esac
 done
 
@@ -218,7 +218,7 @@ LOG_FILE=build/logs/$rootfs_dir_utc.log
 #exec 2> >(tee -a ${LOG_FILE} >&2)
 
 # Cleanup when interrupt signal is received
-trap 'exumount; exit 1' SIGINT
+trap 'exumount; $exit_or_return 1' SIGINT
 
 function exumount() {
     if mount | grep $build_dir/$rootfs_dir_utc/dev > /dev/null; then
@@ -238,10 +238,10 @@ if [[ $arch == $host_arch ]]; then
     # Create root file system and configure debian packages
     if debootstrap --verbose --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" "$repo"
     then
-        echo "debootstrap successfully finished"
+        echo "I: debootstrap successfully finished"
     else
     #if [[ $? != 0 ]]; then
-        echo "debootstrap failed" >&2
+        echo "E: debootstrap failed" >&2
         #umount "$build_dir/$rootfs_dir_utc/dev"
         exumount
         rm -rf "$build_dir/$rootfs_dir_utc"
@@ -251,10 +251,10 @@ else
     # Create root file system
     if debootstrap --verbose --variant=$variant --foreign --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" "$repo"
     then
-        echo "debootstrap successfully finished"
+        echo "I: Debootstrap successfully finished"
     else
     #if [[ $? != 0 ]]; then
-        echo "debootstrap failed" >&2
+        echo "E: Debootstrap failed" >&2
         rm -rf "$build_dir/$rootfs_dir_utc"
         exit 1
     fi
