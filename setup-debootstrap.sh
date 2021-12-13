@@ -4,9 +4,9 @@
 
 dependencies=( debootstrap binfmt-support qemu-user-static )
 ssh_packages=( ssh openssh-server )
-debpkg_default='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools'
-debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils dialog debian-ports-archive-keyring net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools man-db wget'
-debpkg_s390x='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools man-db wget'
+debpkg_default='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils dialog debian-ports-archive-keyring net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_s390x='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools wget man-db'
 rootfs_suffix=debian-rootfs
 
 # Available architectures with their associated qemu
@@ -189,22 +189,22 @@ rootfs_dir_utc=$rootfs_dir-$utc_time
 
 # Log the output into a file (best one I tried yet)
 LOG_FILE=build/logs/$rootfs_dir_utc.log
-if [[ -f "./log4bash.sh" ]]; then
-    source ./log4bash.sh
-    exec > >(
-        while read -r line 
-	do 
-	    if echo "$line" | grep -q 'w:\|warning:'; then 
-	        log_warning "$line" 
-            elif echo "$line" | grep -q 'e:\|error:'; then 
-                log_error "$line"
-            else 
-	        log "$line"
-	    fi | tee -a $LOG_FILE 
-	done
-    )
-    exec 2> >(while read -r line; do log_error "$line" | tee -a $LOG_FILE; done >&2)
-fi
+#if [[ -f "./log4bash.sh" ]]; then
+#    source ./log4bash.sh
+#    exec > >(
+#        while read -r line 
+#        do 
+#            if echo "$line" | grep -q 'W:\|warning:'; then 
+#                log_warning "$line" 
+#            elif echo "$line" | grep -q 'E:\|error:'; then 
+#                log_error "$line"
+#            else 
+#                log "$line"
+#            fi | tee -a $LOG_FILE 
+#        done
+#    )
+#    exec 2> >(while read -r line; do log_error "$line" | tee -a $LOG_FILE; done >&2)
+#fi
 
 #exec > >(while read -r line; do printf '%s %s\n' "$(date --utc +"%Y-%m-%d %H:%M:%S")" "[INFO]:" "$line" | tee -a $LOG_FILE; done)
 #exec 2> >(while read -r line; do printf '%s %s\n' "$(date --utc +"%Y-%m-%d %H:%M:%S")" "[ERROR]:" "$line" | tee -a $LOG_FILE; done >&2)
