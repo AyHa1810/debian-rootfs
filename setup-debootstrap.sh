@@ -189,22 +189,22 @@ rootfs_dir_utc=$rootfs_dir-$utc_time
 
 # Log the output into a file (best one I tried yet)
 LOG_FILE=build/logs/$rootfs_dir_utc.log
-#if [[ -f "./log4bash.sh" ]]; then
-#    source ./log4bash.sh
-#    exec > >(
-#        while read -r line 
-#        do 
-#            if echo "$line" | grep -q 'W:\|warning:'; then 
-#                log_warning "$line" 
-#            elif echo "$line" | grep -q 'E:\|error:'; then 
-#                log_error "$line"
-#            else 
-#                log "$line"
-#            fi | tee -a $LOG_FILE 
-#        done
-#    )
-#    exec 2> >(while read -r line; do log_error "$line" | tee -a $LOG_FILE; done >&2)
-#fi
+if [[ -f "./log4bash.sh" ]]; then
+    source ./log4bash.sh
+    exec > >(
+        while read -r line 
+        do 
+            if echo "$line" | grep -wq 'W:\|warning:'; then 
+                log_warning "$line" 
+            elif echo "$line" | grep -wq 'E:\|error:'; then 
+                log_error "$line"
+            else 
+                log "$line"
+            fi | tee -a $LOG_FILE 
+        done
+    )
+    exec 2> >(while read -r line; do log_error "$line" | tee -a $LOG_FILE; done >&2)
+fi
 
 #exec > >(while read -r line; do printf '%s %s\n' "$(date --utc +"%Y-%m-%d %H:%M:%S")" "[INFO]:" "$line" | tee -a $LOG_FILE; done)
 #exec 2> >(while read -r line; do printf '%s %s\n' "$(date --utc +"%Y-%m-%d %H:%M:%S")" "[ERROR]:" "$line" | tee -a $LOG_FILE; done >&2)
