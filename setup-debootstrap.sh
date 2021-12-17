@@ -97,15 +97,31 @@ while [[ $# -gt 0 ]]; do
         "-h"|"--help"|"?" ) show_usage
                             $exit_or_return 0;;
         "-a"|"--arch"     ) arch="$1"; shift;;
+             "--arch=*"   ) arch="${0/--arch=/''}"; shift;;
         "-r"|"--release"  ) release="$1"; shift;;
         "-R"|"--repo"     ) repo="$1"; shift;;
         "-i"|"--include"  ) include="$1"; shift;;
         "-e"|"--exclude"  ) exclude="$1"; shift;;
-	"-v"|"--variant"  ) variant="$1"; shift ;;
+	"-v"|"--variant"  ) variant="$1"; shift;;
         *                 ) show_usage >&2
                             $exit_or_return 1;;
     esac
 done
+
+# we can also do this 
+# (I'm jus including this line for my learning experience :P)
+#while (( "$#" )); do
+#    case "${1}"  in
+#        --help   ) show_usage && exit 0;;
+#         -h      ) show_usage && exit 0;;
+#        --zip    ) make_dry=1; shift;;
+#        --arch=* ) arch=${1/--arch=/''}; shift;;
+#        --arch*  ) arch=${2}; shift; shift;;
+#        --repo=* ) repo=${1/--repo=/''}; shift;;
+#        --repo*  ) repo=${2}; shift; shift;;
+#          *      ) show_usage >&2; $exit_or_return 1;;
+#    esac
+#done
 
 if [[ ! $arch ]]; then
     arch=$host_arch
