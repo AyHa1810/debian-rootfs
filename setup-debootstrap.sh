@@ -146,16 +146,16 @@ case $arch in
     *) instpkgs=$debpkg_default
 esac
 
-if [[ ! $addpkg ]]; then
+if [[ ! $include ]]; then
     includepkg="$instpkgs"
 else
-    includepkg="$instpkgs $addpkg"
+    includepkg="$instpkgs $include"
 fi
 
-if [[ ! $rmpkg ]]; then
+if [[ ! $exclude ]]; then
     excludepkg=""
 else
-    excludepkg="--exclude $rmpkg"
+    excludepkg="--exclude $exclude"
 fi
 
 # Check architecture is suppported
