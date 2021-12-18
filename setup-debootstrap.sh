@@ -4,9 +4,9 @@
 
 dependencies=( debootstrap binfmt-support qemu-user-static )
 ssh_packages=( ssh openssh-server )
-debpkg_default='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
-debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils dialog debian-ports-archive-keyring net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
-debpkg_s390x='kmod dbus apt apt-utils dialog net-tools iproute2 iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_default='kmod dbus apt apt-utils dialog net-tools locales iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils dialog locales debian-ports-archive-keyring net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_s390x='kmod dbus apt apt-utils dialog locales net-tools iproute2 iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools wget man-db'
 rootfs_suffix=debian-rootfs
 
 # Available architectures with their associated qemu
@@ -306,8 +306,8 @@ chroot $build_dir/$rootfs_dir_utc dpkg -l | awk '{if (NR>3) {print $2" "$3}}' > 
 # Install packages
 chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrade -y && apt-get install -y $includepkg"
 
-# Clean bash history
-chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
+# Generate locale
+chroot $build_dir/$rootfs_dir_utc locale-gen en_US.UTF-8
 
 # Kill processes running in rootfs
 #fuser -sk $build_dir/$rootfs_dir_utc
@@ -349,6 +349,24 @@ echo "# DNS.WATCH servers" > $filename
 echo "nameserver 84.200.69.80" >> $filename
 echo "nameserver 84.200.70.40" >> $filename
 
+# Set default locale
+filename=$build_dir/$rootfs_dir/etc/default/locale
+echo "en_US.UTF-8" > $filename
+
+# Set apt repository
+filename=filename=$build_dir/$rootfs_dir/etc/apt/sources.list
+echo "deb http://deb.debian.org/debian stable main contrib non-free" > $filename
+echo "deb-src http://deb.debian.org/debian stable main contrib non-free" >> $filename
+echo "" >> $filename
+echo "deb http://deb.debian.org/debian-security/ stable-security main contrib non-free" >> $filename
+echo "deb-src http://deb.debian.org/debian-security/ stable-security main contrib non-free" >> $filename
+echo "" >> $filename
+echo "deb http://deb.debian.org/debian stable-updates main contrib non-free" >> $filename
+echo "deb-src http://deb.debian.org/debian stable-updates main contrib non-free" >> $filename
+
+# Keep the rootfs up-to-date with the repos
+chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt-get update && apt-get upgrade -y && apt autoremove -y"
+
 # Enable root autologin
 filename=$build_dir/$rootfs_dir/lib/systemd/system/serial-getty@.service
 autologin='--autologin root'
@@ -375,6 +393,9 @@ if [[ -f $filename ]]; then
         sed -ri "/^#?${i% *}/c\\$i" $filename
     done
 fi
+
+# Clean bash history
+chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
 
 echo
 echo "$build_dir/`readlink $build_dir/$rootfs_dir` configured"
