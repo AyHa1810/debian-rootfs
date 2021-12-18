@@ -354,7 +354,7 @@ filename=$build_dir/$rootfs_dir/etc/default/locale
 echo "en_US.UTF-8" > $filename
 
 # Set apt repository
-filename=filename=$build_dir/$rootfs_dir/etc/apt/sources.list
+filename=$build_dir/$rootfs_dir/etc/apt/sources.list
 echo "deb http://deb.debian.org/debian stable main contrib non-free" > $filename
 echo "deb-src http://deb.debian.org/debian stable main contrib non-free" >> $filename
 echo "" >> $filename
