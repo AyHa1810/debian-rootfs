@@ -351,7 +351,7 @@ echo "nameserver 84.200.70.40" >> $filename
 
 # Set default locale
 filename=$build_dir/$rootfs_dir/etc/default/locale
-echo "en_US.UTF-8" > $filename
+echo "LANG=en_US.UTF-8" > $filename
 
 # Set apt repository
 filename=$build_dir/$rootfs_dir/etc/apt/sources.list
