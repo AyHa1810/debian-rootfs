@@ -39,5 +39,5 @@ jobs:
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
         with:
-          name: debian-rootfs-${{ github.event.inputs.arch }}
-          path: $OUTPUT
+          name: debian-rootfs-amd64
+          path: ./build/amd64/*.tar.gz
