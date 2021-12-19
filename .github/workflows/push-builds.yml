@@ -75,4 +75,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           #name: debian-rootfs-mips64el
-          path:./build/mips64el/*.tar.gz
+          path: ./build/mips64el/*.tar.gz
