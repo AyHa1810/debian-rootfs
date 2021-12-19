@@ -44,35 +44,35 @@ jobs:
       - name: Upload debian-rootfs-amd64
         uses: actions/upload-artifact@v2
         with:
-          #name: debian-rootfs-amd64
+          name: debian-rootfs-amd64
           path: ./build/amd64/*.tar.gz
 
       - name: Upload debian-rootfs-i386
         uses: actions/upload-artifact@v2
         with:
-          #name: debian-rootfs-i386
+          name: debian-rootfs-i386
           path: ./build/i386/*.tar.gz
 
       - name: Upload debian-rootfs-arm64
         uses: actions/upload-artifact@v2
         with:
-          #name: debian-rootfs-arm64
+          name: debian-rootfs-arm64
           path: ./build/arm64/*.tar.gz
 
       - name: Upload debian-rootfs-armel
         uses: actions/upload-artifact@v2
         with:
-          #name: debian-rootfs-armel
+          name: debian-rootfs-armel
           path: ./build/armel/*.tar.gz
 
       - name: Upload debian-rootfs-armhf
         uses: actions/upload-artifact@v2
         with:
-          #name: debian-rootfs-armhf
+          name: debian-rootfs-armhf
           path: ./build/armhf/*.tar.gz
 
       - name: Upload debian-rootfs-mips64el
         uses: actions/upload-artifact@v2
         with:
-          #name: debian-rootfs-mips64el
+          name: debian-rootfs-mips64el
           path: ./build/mips64el/*.tar.gz
