@@ -33,7 +33,7 @@ jobs:
         run: |
           sudo chmod +x setup-debootstrap.sh
           sudo bash -x setup-debootstrap.sh --arch amd64
-          sudo bash -x setup-debootstrap.sh --arch i368
+          sudo bash -x setup-debootstrap.sh --arch i386
           sudo bash -x setup-debootstrap.sh --arch arm64
           sudo bash -x setup-debootstrap.sh --arch armel
           sudo bash -x setup-debootstrap.sh --arch armhf
