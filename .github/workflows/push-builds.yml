@@ -11,7 +11,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build-amd64:
+  build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -33,11 +33,16 @@ jobs:
         run: |
           sudo chmod +x setup-debootstrap.sh
           sudo bash -x setup-debootstrap.sh --arch amd64
-          OUTPUT=$(sudo find "./build/amd64/" -maxdepth 1 -name "*.tar.gz" | grep -q -H 'debian-rootfs-amd64-')
-          echo "OUTPUT=$(echo $OUTPUT)" >> $GITHUB_ENV
+          sudo bash -x setup-debootstrap.sh --arch i368
+          sudo bash -x setup-debootstrap.sh --arch arm64
+          sudo bash -x setup-debootstrap.sh --arch armel
+          sudo bash -x setup-debootstrap.sh --arch armhf
+          sudo bash -x setup-debootstrap.sh --arch mips64el
+          #OUTPUT=$(sudo find "./build/amd64/" -maxdepth 1 -name "*.tar.gz" | grep -q -H 'debian-rootfs-amd64-')
+          #echo "OUTPUT=$(echo $OUTPUT)" >> $GITHUB_ENV
 
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
         with:
-          name: debian-rootfs-amd64
-          path: ./build/amd64/*.tar.gz
+          #name: debian-rootfs-amd64
+          path: ./build/**/*.tar.gz
