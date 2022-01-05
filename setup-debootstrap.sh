@@ -409,8 +409,9 @@ rootfs_dir_utc=`readlink $build_dir/$rootfs_dir`
 tar_name=$rootfs_dir_utc$TAR_EXTENSION
 
 cd $build_dir
-tar cpfz $tar_name $rootfs_dir_utc
-# you can put -C or --directory=DIR to archive contents inside the dir like "tar cpfz $tar_name -C $rootfs_dir_utc/ ."
+#tar cpfz $tar_name $rootfs_dir_utc
+tar cpfz $tar_name -C $rootfs_dir_utc/ .
+
 cd - >/dev/null
 
 echo
