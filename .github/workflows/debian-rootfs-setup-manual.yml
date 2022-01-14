@@ -35,11 +35,11 @@ jobs:
         run: |
           sudo chmod +x setup-debootstrap.sh
           sudo bash setup-debootstrap.sh --arch ${{ github.event.inputs.arch }}
-          OUTPUT=$(sudo find "./build/${{ github.event.inputs.arch }}" -maxdepth 1 -name "*.tar.gz" | grep -q -H 'debian-rootfs-${{ github.event.inputs.arch }}-')
-          echo "OUTPUT=$(echo $OUTPUT)" >> $GITHUB_ENV
+          #OUTPUT=$(sudo find "./build/${{ github.event.inputs.arch }}" -maxdepth 1 -name "*.tar.gz" | grep -q -H 'debian-rootfs-${{ github.event.inputs.arch }}-')
+          #echo "OUTPUT=$(echo $OUTPUT)" >> $GITHUB_ENV
 
       - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
         with:
           name: debian-rootfs-${{ github.event.inputs.arch }}
-          path: $OUTPUT
+          path: ./build/${{ github.event.inputs.arch }}/*.tar.gz
