@@ -394,6 +394,9 @@ if [[ -f $filename ]]; then
     done
 fi
 
+# Clean apt cache
+chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt clean"
+
 # Clean bash history
 chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
 
