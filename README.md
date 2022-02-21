@@ -1,4 +1,6 @@
 # debian-rootfs
+### Status
+[![Push-builds](https://github.com/AyHa1810/debian-rootfs/actions/workflows/push-builds.yml/badge.svg)](https://github.com/AyHa1810/debian-rootfs/actions/workflows/push-builds.yml)
 #### WARNING: not finished lmao
 debian-rootfs generator using debootstrap <br />
 maybe multistrap idk <br />
