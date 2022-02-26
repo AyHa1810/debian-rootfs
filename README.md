@@ -45,6 +45,7 @@ I want to add stuff like
 ## Related
 - [debian-rootfs](https://github.com/jubinson/debian-rootfs) by [@jubinson](https://github.com/jubinson) (MIT)
 - [log4bash](https://github.com/fredpalmer/log4bash) by [@fredpalmer](https://github.com/fredpalmer) (BSD 3-Clause)
+- [slog](https://github.com/swelljoe/slog) by [@swelljoe](https://github.com/swelljoe) (BSD 3-Clause)
 - [multistrap](https://wiki.debian.org/Multistrap) (GNU GPL v3)
 - [debootstrap](https://wiki.debian.org/Debootstrap) (GNU GPL v2)
 
