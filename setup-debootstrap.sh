@@ -312,9 +312,6 @@ chroot $build_dir/$rootfs_dir_utc locale-gen en_US.UTF-8
 # Kill processes running in rootfs
 #fuser -sk $build_dir/$rootfs_dir_utc
 
-# Remove qemu binary from rootfs
-rm $build_dir/$rootfs_dir_utc$qemu_path 2>/dev/null
-
 # Umount /dev in rootfs
 if mount | grep $build_dir/$rootfs_dir_utc/dev > /dev/null; then
   umount $build_dir/$rootfs_dir_utc/dev
@@ -399,6 +396,9 @@ chroot $build_dir/$rootfs_dir_utc /bin/bash -c "apt clean"
 
 # Clean bash history
 chroot $build_dir/$rootfs_dir_utc /bin/bash -c "history -c && history -w"
+
+# Remove qemu binary from rootfs
+rm $build_dir/$rootfs_dir_utc$qemu_path 2>/dev/null
 
 echo
 echo "$build_dir/`readlink $build_dir/$rootfs_dir` configured"
