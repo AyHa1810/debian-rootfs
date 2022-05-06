@@ -4,9 +4,9 @@
 
 dependencies=( debootstrap binfmt-support qemu-user-static )
 ssh_packages=( ssh openssh-server )
-debpkg_default='kmod dbus apt apt-utils xz-utils dialog net-tools locales iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
-debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils xz-utils dialog locales debian-ports-archive-keyring net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
-debpkg_s390x='kmod dbus apt apt-utils xz-utils dialog locales net-tools iproute2 iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_default='kmod dbus apt apt-utils xz-utils isc-dhcp-server dialog net-tools locales iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_powerpcspe='systemd-sysv udev kmod dbus apt apt-utils xz-utils isc-dhcp-server dialog locales debian-ports-archive-keyring net-tools iproute2 iputils-ping ifupdown ssh nano pciutils i2c-tools dosfstools wget man-db'
+debpkg_s390x='kmod dbus apt apt-utils xz-utils isc-dhcp-server dialog locales net-tools iproute2 iputils-ping ifupdown openssh-client nano pciutils i2c-tools dosfstools wget man-db'
 rootfs_suffix=debian-rootfs
 
 # Available architectures with their associated qemu
