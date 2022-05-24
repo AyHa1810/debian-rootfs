@@ -3,10 +3,7 @@
 [![Push-builds](https://github.com/AyHa1810/debian-rootfs/actions/workflows/push-builds.yml/badge.svg)](https://github.com/AyHa1810/debian-rootfs/actions/workflows/push-builds.yml)
 #### WARNING: not finished lmao
 debian-rootfs generator using debootstrap <br />
-maybe multistrap idk <br />
-project is fucked up ofc <br />
-so either ~~contribute to this shit~~ help me and teach stuff or get the fuck outta here my brain hurts now <br />
-*me apology for bad behaviour sorri*
+maybe multistrap idk
 
 Work in progress :P 
 
