@@ -14,6 +14,10 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        arch: [ 'amd64', 'arm64', 'armel', 'armhf', 'i386', 'mips', 'mipsel', 'mips64el', 'powerpc', 'powerpcspe', 'ppc64el', 's390x' ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -26,73 +30,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y debootstrap binfmt-support qemu-user-static debian-archive-keyring
           sudo modprobe binfmt_misc
-          #sudo tee /usr/share/keyrings/debian-archive-keyring.gpg 
           sudo apt-get update
 
-      - name: Make debian-rootfs-amd64
+      - name: Run setup-debootstrap.sh
         run: |
           sudo chmod +x setup-debootstrap.sh
-          sudo bash -x setup-debootstrap.sh --arch amd64
+          sudo bash -x setup-debootstrap.sh --arch ${{ matrix.arch }}
 
-      - name: Upload debian-rootfs-amd64
+      - name: Upload debian-rootfs
         uses: actions/upload-artifact@v2
         with:
-          name: debian-rootfs-amd64
-          path: ./build/amd64/*.tar.gz
+          name: debian-rootfs-${{ matrix.arch }}
+          path: ./build/${{ matrix.arch }}/*.tar.gz
 
-      - name: Make debian-rootfs-i386
-        run: |
-          sudo chmod +x setup-debootstrap.sh
-          sudo bash -x setup-debootstrap.sh --arch i386
-
-      - name: Upload debian-rootfs-i386
-        uses: actions/upload-artifact@v2
-        with:
-          name: debian-rootfs-i386
-          path: ./build/i386/*.tar.gz
-
-      - name: Make debian-rootfs-arm64
-        run: |
-          sudo chmod +x setup-debootstrap.sh
-          sudo bash -x setup-debootstrap.sh --arch arm64
-
-      - name: Upload debian-rootfs-arm64
-        uses: actions/upload-artifact@v2
-        with:
-          name: debian-rootfs-arm64
-          path: ./build/arm64/*.tar.gz
-
-      - name: Make debian-rootfs-armel
-        run: |
-          sudo chmod +x setup-debootstrap.sh
-          sudo bash -x setup-debootstrap.sh --arch armel
-
-      - name: Upload debian-rootfs-armel
-        uses: actions/upload-artifact@v2
-        with:
-          name: debian-rootfs-armel
-          path: ./build/armel/*.tar.gz
-
-      - name: Make debian-rootfs-armhf
-        run: |
-          sudo chmod +x setup-debootstrap.sh
-          sudo bash -x setup-debootstrap.sh --arch armhf
-
-      - name: Upload debian-rootfs-armhf
-        uses: actions/upload-artifact@v2
-        with:
-          name: debian-rootfs-armhf
-          path: ./build/armhf/*.tar.gz
-
-      - name: Make debian-rootfs-mips64el
-        run: |
-          sudo chmod +x setup-debootstrap.sh
-          sudo bash -x setup-debootstrap.sh --arch mips64el
-          #OUTPUT=$(sudo find "./build/amd64/" -maxdepth 1 -name "*.tar.gz" | grep -q -H 'debian-rootfs-amd64-')
-          #echo "OUTPUT=$(echo $OUTPUT)" >> $GITHUB_ENV
-
-      - name: Upload debian-rootfs-mips64el
-        uses: actions/upload-artifact@v2
-        with:
-          name: debian-rootfs-mips64el
-          path: ./build/mips64el/*.tar.gz
