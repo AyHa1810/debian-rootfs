@@ -15,12 +15,11 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.setVariables.outputs.matrix }}
+      archArray: ${{ steps.setVariables.outputs.archArray }}
     steps:
       - id: setVariables
         run: |
-          echo "::set-output name=matrix::['amd64']"
-          echo $input
+          echo "::set-output name=archArray::$input"
         env:
           input: ${{ inputs.arch }}
           
@@ -31,7 +30,7 @@ jobs:
     needs: setup
     strategy:
       matrix:
-        arch: ${{fromJSON(needs.setup.outputs.arch)}}
+        arch: ${{fromJSON(needs.setup.outputs.archArray)}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
