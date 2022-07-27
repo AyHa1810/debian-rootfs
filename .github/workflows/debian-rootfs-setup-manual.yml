@@ -8,7 +8,7 @@ on:
       arch:
         description: "Debian Architecture"
         required: true
-        default: "'amd64'"
+        default: "['amd64']"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,7 +19,7 @@ jobs:
     steps:
       - id: setVariables
         run: |
-          echo "::set-output name=matrix::[$input]"
+          echo "::set-output name=matrix::$input"
         env:
           input: ${{ inputs.arch }}
           
@@ -30,7 +30,7 @@ jobs:
     needs: setup
     strategy:
       matrix:
-        arch: ${{fromJson(needs.setup.outputs.arch)}}
+        arch: ${{fromJSON(needs.setup.outputs.arch)}}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
