@@ -19,7 +19,8 @@ jobs:
     steps:
       - id: setVariables
         run: |
-          echo "::set-output name=matrix::$input"
+          echo "::set-output name=matrix::['amd64']"
+          echo $input
         env:
           input: ${{ inputs.arch }}
           
