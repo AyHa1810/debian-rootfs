@@ -16,12 +16,18 @@ qemu_static[arm64]=qemu-aarch64-static
 qemu_static[armel]=qemu-arm-static
 qemu_static[armhf]=qemu-arm-static
 qemu_static[i386]=qemu-i386-static
+qemu_static[alpha]=qemu-alpha-static
+qemu_static[m68k]=qemu-m68k-static
 qemu_static[mips]=qemu-mips-static
 qemu_static[mipsel]=qemu-mipsel-static
 qemu_static[powerpc]=qemu-ppc-static
 qemu_static[powerpcspe]=qemu-ppc-static
 qemu_static[ppc64el]=qemu-ppc64le-static
+qemu_static[riscv32]=qemu-riscv32-static
+qemu_static[riscv64]=qemu-riscv64-static
 qemu_static[s390x]=qemu-s390x-static
+qemu_static[sh4]=qemu-sh4-static
+qemu_static[sparc64]=qemu-sparc64-static
 
 # Prints the archs list
 print_archs() {
@@ -63,6 +69,13 @@ case $host_arch in
     aarch64) host_arch=arm64 ;;
     *) host_arch=$host_arch
 esac
+
+containsElement () {
+    local e match="$1"
+    shift
+    for e; do [[ "$e" == "$match" ]] && return 0; done
+    return 1
+}
 
 # Print usage
 function show_usage (){
@@ -129,7 +142,7 @@ fi
 
 if [[ ! $release ]]; then
     case $arch in
-        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sparc64" ) release=unreleased ;;
+        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sh4" | "sparc64" ) release=unreleased ;;
         "mips" ) release=oldstable ;;
         * ) release=stable
     esac
@@ -137,7 +150,7 @@ fi
 
 if [[ ! $repo ]]; then
     case $arch in
-        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sparc64" ) repo="http://ftp.ports.debian.org/debian-ports/" ;;
+        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sh4" | "sparc64" ) repo="http://ftp.ports.debian.org/debian-ports/" ;;
         * ) repo="http://ftp.debian.org/debian/"
     esac
 fi
@@ -165,8 +178,9 @@ else
     excludepkg="--exclude $exclude"
 fi
 
+#excludeArch=("all" "source")
 # Check architecture is suppported
-if [[ $arch != $host_arch ]]; then
+if [[ $arch != "all" || $arch != $host_arch ]]; then
     if [[ ! ${qemu_static[$arch]} ]]; then
         echo "$arch not valid, architectures supported are:"
         print_archs
