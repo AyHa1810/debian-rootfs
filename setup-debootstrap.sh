@@ -128,12 +128,15 @@ if [[ ! $arch ]]; then
 fi
 
 if [[ ! $release ]]; then
-    release=stable
+    case $arch in
+        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sparc64" ) release=unreleased ;;
+        "mips" ) release=oldstable ;;
+        * ) release=stable
 fi
 
 if [[ ! $repo ]]; then
     case $arch in
-        "powerpc" | "powerpcspe" | "mips" ) repo="http://ftp.ports.debian.org/debian-ports/" ;;
+        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sparc64" ) repo="http://ftp.ports.debian.org/debian-ports/" ;;
         * ) repo="http://ftp.debian.org/debian/"
     esac
 fi
