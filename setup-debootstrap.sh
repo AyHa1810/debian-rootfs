@@ -142,7 +142,7 @@ fi
 
 if [[ ! $release ]]; then
     case $arch in
-        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sh4" | "sparc64" ) release=unreleased ;;
+        "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sh4" | "sparc64" ) release=unstable ;;
         "mips" ) release=oldstable ;;
         * ) release=stable
     esac
