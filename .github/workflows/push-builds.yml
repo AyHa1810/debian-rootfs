@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y debootstrap binfmt-support qemu-user-static debian-archive-keyring
+          sudo apt-get install -y debootstrap binfmt-support qemu-user-static debian-archive-keyring debian-ports-archive-keyring
           sudo modprobe binfmt_misc
           sudo apt-get update
 
