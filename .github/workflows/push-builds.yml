@@ -17,7 +17,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        arch: [ 'amd64', 'arm64', 'armel', 'armhf', 'i386', 'mips', 'mipsel', 'mips64el', 'powerpc', 'powerpcspe', 'ppc64el', 'riscv64, 's390x' ]
+        arch: [ 'amd64', 'arm64', 'armel', 'armhf', 'i386', 'mips', 'mipsel', 'mips64el', 'powerpc', 'powerpcspe', 'ppc64el', 'riscv64', 's390x' ]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
