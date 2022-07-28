@@ -132,6 +132,7 @@ if [[ ! $release ]]; then
         "source" | "ia64" | "powerpc" | "powerpcspe" | "m68k" | "riscv64" | "sparc64" ) release=unreleased ;;
         "mips" ) release=oldstable ;;
         * ) release=stable
+    esac
 fi
 
 if [[ ! $repo ]]; then
