@@ -132,7 +132,10 @@ if [[ ! $release ]]; then
 fi
 
 if [[ ! $repo ]]; then
-    repo=http://ftp.debian.org/debian/
+    case $arch in
+        "powerpc" | "powerpcspe" | "mips" ) repo="http://ftp.ports.debian.org/debian-ports/" ;;
+        * ) repo="http://ftp.debian.org/debian/"
+    esac
 fi
 
 if [[ ! $variant ]]; then
@@ -252,7 +255,7 @@ if [[ $arch == $host_arch ]]; then
     #mount --bind /dev $build_dir/$rootfs_dir_utc/dev
 
     # Create root file system and configure debian packages
-    if debootstrap --verbose --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" "$repo"
+    if debootstrap --verbose --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" $repo
     then
         echo "I: debootstrap successfully finished"
     else
@@ -265,7 +268,7 @@ if [[ $arch == $host_arch ]]; then
     fi
 else
     # Create root file system
-    if debootstrap --verbose --variant=$variant --foreign --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" "$repo"
+    if debootstrap --verbose --variant=$variant --foreign --arch $arch $excludepkg "$release" "$build_dir/$rootfs_dir_utc" $repo
     then
         echo "I: Debootstrap successfully finished"
     else
