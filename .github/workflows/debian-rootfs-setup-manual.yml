@@ -9,6 +9,14 @@ on:
         description: "Debian Architecture"
         required: true
         default: "['amd64']"
+      repo:
+        description: "Package Repository"
+        required: false
+        default: ""
+      include:
+        description: "Include packages"
+        required:false
+        default: ""
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -42,7 +50,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y debootstrap binfmt-support qemu-user-static debian-archive-keyring
+          sudo apt-get install -y debootstrap binfmt-support qemu-user-static debian-archive-keyring debian-ports-archive-keyring
           sudo modprobe binfmt_misc
           #sudo tee /usr/share/keyrings/debian-archive-keyring.gpg 
           sudo apt-get update
@@ -50,7 +58,7 @@ jobs:
       - name: Run setup-debootstrap.sh
         run: |
           sudo chmod +x setup-debootstrap.sh
-          sudo bash setup-debootstrap.sh --arch ${{ matrix.arch }} #${{ github.event.inputs.arch }}
+          sudo bash setup-debootstrap.sh --arch ${{ matrix.arch }} --include ${{ inputs.include }} --repo ${{ inputs.repo }} #${{ github.event.inputs.arch }}
           #OUTPUT=$(sudo find "./build/${{ matrix.arch }}" -maxdepth 1 -name "*.tar.gz" | grep -q -H 'debian-rootfs-${{ matrix.arch }}-')
           #echo "OUTPUT=$(echo $OUTPUT)" >> $GITHUB_ENV
 
