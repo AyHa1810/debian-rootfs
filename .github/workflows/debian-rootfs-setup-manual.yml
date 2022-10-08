@@ -15,7 +15,7 @@ on:
         default: ""
       include:
         description: "Include packages"
-        required:false
+        required: false
         default: ""
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
