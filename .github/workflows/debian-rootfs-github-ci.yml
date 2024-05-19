@@ -100,7 +100,7 @@ jobs:
         run: sudo tar -cpvzf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           
       - name: Upload debian-rootfs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           path: debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar.gz

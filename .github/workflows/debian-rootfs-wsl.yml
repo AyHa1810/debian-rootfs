@@ -10,7 +10,7 @@ on:
       codename:
         description: "Debian codename"
         required: true
-        default: "bullseye"
+        default: "stable"
       
       arch:
         description: "Debian Architecture"
@@ -54,7 +54,7 @@ jobs:
           sudo tar -cpvf debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar -C debian-rootfs-${{ steps.current-time.outputs.formattedTime }} ./
           
       - name: Upload debian-rootfs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: debian-rootfs-${{ steps.current-time.outputs.formattedTime }}
           path: debian-rootfs-${{ steps.current-time.outputs.formattedTime }}.tar

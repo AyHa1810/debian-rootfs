@@ -27,7 +27,7 @@ jobs:
     steps:
       - id: setVariables
         run: |
-          echo "::set-output name=archArray::$input"
+          echo "archArray=$input" >> $GITHUB_OUTPUT
         env:
           input: ${{ inputs.arch }}
           
@@ -63,7 +63,7 @@ jobs:
           #echo "OUTPUT=$(echo $OUTPUT)" >> $GITHUB_ENV
 
       - name: Upload debian-rootfs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: debian-rootfs-${{ matrix.arch }}
           path: ./build/${{ matrix.arch }}/*.tar.gz
